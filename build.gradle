@@ -1,9 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
-apply plugin: 'maven-publish'
 
-group = 'org.moallemi'
-version = '1.0'
+group = GROUP
+version = VERSION_NAME
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
@@ -19,4 +18,10 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
+
+    testCompile 'org.easytesting:fest-assert:1.4'
+}
+
+test {
+    useTestNG()
 }

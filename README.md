@@ -8,20 +8,23 @@ Add the advanced-build-version plugin to your build script and use the property 
 `advancedVersioning.codeOptions.versionCode` where you need:
 
 ```
+
+buildscript {
+  repositories {
+    maven() {
+        url("https://oss.sonatype.org/content/groups/public")
+    }
+  }
+
+  dependencies {
+    classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.0.0-SNAPSHOT'
+  }
+}
+
 apply plugin: 'advanced-build-version'
 
 def appVersionName = advancedVersioning.nameOptions.versionName
 def appVersionCode = advancedVersioning.codeOptions.versionCode
-
-buildscript {
-  repositories {
-    jcenter()
-  }
-
-  dependencies {
-    classpath 'org.moallemi.gradle:advanced-build-version:+'
-  }
-}
 
 ```
 
@@ -77,9 +80,10 @@ advancedVersioning {
 
  `versionCodeType` can be one of following params:
  
- * `org.moallemi.gradle.internal.VersionCodeType.DATE` formatted number e.g.: 15134721
- * `org.moallemi.gradle.internal.VersionCodeType.JALALI_DATE` will output 9310171102
- * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT` will output e.g: 24. this property stores
+ * `org.moallemi.gradle.internal.VersionCodeType.DATE` formatted number e.g.: 1501101614
+ * `org.moallemi.gradle.internal.VersionCodeType.JALALI_DATE` will output 931017
+ * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_DATE` will output 101101614
+ * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP` will output e.g: 24. this property stores
  VERSION_CODE in `version.properties` file in your project structure
 
 

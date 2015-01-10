@@ -10,7 +10,7 @@ class VersionCodeOptions {
 
     private static SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmm", Locale.US);
 
-    private VersionCodeType mVersionCodeType = VersionCodeType.AUTO_INCREAMENT
+    private VersionCodeType mVersionCodeType = VersionCodeType.AUTO_INCREMENT_ONE_STEP
     private int mForceVersionCode = -1
     private String mDateFormat = "yyMMdd"
     private boolean mAutoIncrementReleaseOnly = true
@@ -33,6 +33,22 @@ class VersionCodeOptions {
         }
         switch (mVersionCodeType) {
             case VersionCodeType.DATE:
+                if (mDateFormat.equals("")) {
+                    throw new GradleException("you must specify date format e.g. yyMMdd")
+                }
+
+
+                Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+
+                int year = (calendar.get(Calendar.YEAR) - 2000) * 100000000
+                int month = (calendar.get(Calendar.MONTH) + 1) * 1000000
+                int day = calendar.get(Calendar.DAY_OF_MONTH) * 10000
+                int hour = calendar.get(Calendar.HOUR_OF_DAY) * 100
+                int minutes = calendar.get(Calendar.MINUTE)
+
+                int code = year + month + day + hour + minutes
+
+                return code
                 return Integer.parseInt(formatter.format(new Date())) - 1400000000;
 
             case VersionCodeType.JALALI_DATE:
@@ -57,27 +73,31 @@ class VersionCodeOptions {
 
                 return code
 
-            case VersionCodeType.AUTO_INCREMENT:
+            case VersionCodeType.AUTO_INCREMENT_ONE_STEP:
                 def versionPropsFile = new File('version.properties')
                 if (versionPropsFile.canRead()) {
                     def Properties versionProps = new Properties()
                     versionProps.load(new FileInputStream(versionPropsFile))
-                    if (versionProps['VERSION_CODE'] == null) {
-                        versionProps['VERSION_CODE'] = "1"
+                    if (versionProps['AI_VERSION_CODE'] == null) {
+                        versionProps['AI_VERSION_CODE'] = "0"
                     }
-                    def code = versionProps['VERSION_CODE'].toInteger()
+                    def code = versionProps['AI_VERSION_CODE'].toInteger()
                     if (mAutoIncrementReleaseOnly) {
                         code += 1
                     }
                     //TODO write signature on file
-                    versionProps['VERSION_CODE'] = code.toString()
+                    versionProps['AI_VERSION_CODE'] = code.toString()
                     versionProps.store(versionPropsFile.newWriter(), null)
                     return code
                 } else {
                     throw new GradleException("Could not read version.properties file in path \""
-                            + versionPropsFile.getAbsolutePath() + "\"")
+                            + versionPropsFile.getAbsolutePath() + "\" \r\n" +
+                            "Please create this file and add it to your VCS (git, svn, ...).")
                 }
                 break;
+
+            case VersionCodeType.AUTO_INCREMENT_DATE:
+                return Integer.parseInt(formatter.format(new Date())) - 1400000000;
         }
         return 1;
     }
