@@ -3,17 +3,31 @@ package org.moallemi.gradle.internal
 import date.DateUtils
 import date.JalaliDate
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 
 import java.text.SimpleDateFormat
 
 class VersionCodeOptions {
 
     private static SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmm", Locale.US);
+    private static final DEFAULT_DEPENDS_ON = Collections.singletonList('release')
 
     private VersionCodeType mVersionCodeType = VersionCodeType.AUTO_INCREMENT_ONE_STEP
     private int mForceVersionCode = -1
     private String mDateFormat = "yyMMdd"
     private boolean mAutoIncrementReleaseOnly = true
+    List<Object> dependsOnTasks = DEFAULT_DEPENDS_ON
+    private File versionPropsFile
+
+    private Project project
+
+    VersionCodeOptions(Project project) {
+        this.project = project
+    }
+
+    void dependsOnTasks(Object... paths) {
+        this.dependsOnTasks = Arrays.asList(paths)
+    }
 
     void forcedVersionCode(int code) {
         mForceVersionCode = code
@@ -25,6 +39,14 @@ class VersionCodeOptions {
 
     void versionCodeType(VersionCodeType type) {
         mVersionCodeType = type
+    }
+
+    VersionCodeType getVersionCodeType() {
+        return mVersionCodeType
+    }
+
+    File getVersionFile() {
+        return versionPropsFile
     }
 
     int getVersionCode() {
@@ -74,20 +96,14 @@ class VersionCodeOptions {
                 return code
 
             case VersionCodeType.AUTO_INCREMENT_ONE_STEP:
-                def versionPropsFile = new File('version.properties')
+                versionPropsFile = new File(project.buildFile.getParent() + "/version.properties")
                 if (versionPropsFile.canRead()) {
                     def Properties versionProps = new Properties()
                     versionProps.load(new FileInputStream(versionPropsFile))
                     if (versionProps['AI_VERSION_CODE'] == null) {
                         versionProps['AI_VERSION_CODE'] = "0"
                     }
-                    def code = versionProps['AI_VERSION_CODE'].toInteger()
-                    if (mAutoIncrementReleaseOnly) {
-                        code += 1
-                    }
-                    //TODO write signature on file
-                    versionProps['AI_VERSION_CODE'] = code.toString()
-                    versionProps.store(versionPropsFile.newWriter(), null)
+                    int code = Integer.valueOf(versionProps['AI_VERSION_CODE'].toString()) + 1
                     return code
                 } else {
                     throw new GradleException("Could not read version.properties file in path \""

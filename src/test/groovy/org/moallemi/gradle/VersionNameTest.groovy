@@ -31,7 +31,7 @@ public class VersionNameTest {
             }
         }
 
-        project.version = project.advancedVersioning.nameOptions.versionName
+        project.version = project.advancedVersioning.versionName
         assertThat(project.version.toString()).isEqualToIgnoringCase("1.0")
     }
 
@@ -44,7 +44,7 @@ public class VersionNameTest {
             }
         }
 
-        project.version = project.advancedVersioning.nameOptions.versionName
+        project.version = project.advancedVersioning.versionName
         assertThat(project.version.toString()).isEqualToIgnoringCase("1.3")
     }
 
@@ -57,7 +57,7 @@ public class VersionNameTest {
             }
         }
 
-        project.version = project.advancedVersioning.nameOptions.versionName
+        project.version = project.advancedVersioning.versionName
         assertThat(project.version.toString()).isEqualToIgnoringCase("1.0.8")
     }
 
@@ -71,7 +71,7 @@ public class VersionNameTest {
             }
         }
 
-        project.version = project.advancedVersioning.nameOptions.versionName
+        project.version = project.advancedVersioning.versionName
         assertThat(project.version.toString()).isEqualToIgnoringCase("1.0.8.2")
     }
 
@@ -84,7 +84,7 @@ public class VersionNameTest {
             }
         }
 
-        project.version = project.advancedVersioning.nameOptions.versionName
+        project.version = project.advancedVersioning.versionName
         assertThat(project.version.toString()).isEqualToIgnoringCase("3.0.0.9")
     }
 
@@ -97,7 +97,7 @@ public class VersionNameTest {
             }
         }
 
-        project.version = project.advancedVersioning.nameOptions.versionName
+        project.version = project.advancedVersioning.versionName
         assertThat(project.version.toString()).isEqualToIgnoringCase("0.7.0.4")
     }
 }

@@ -8,12 +8,14 @@ import javax.inject.Inject;
 class AdvancedBuildVersionExtension {
 
     final Project project;
-    VersionNameOptions nameOptions = new VersionNameOptions()
-    VersionCodeOptions codeOptions = new VersionCodeOptions()
+    VersionNameOptions nameOptions
+    VersionCodeOptions codeOptions
 
     @Inject
     AdvancedBuildVersionExtension(Project project) {
         this.project = project
+        nameOptions = new VersionNameOptions()
+        codeOptions = new VersionCodeOptions(project)
     }
 
     void nameOptions(Closure c) {
@@ -22,5 +24,13 @@ class AdvancedBuildVersionExtension {
 
     void codeOptions(Closure c) {
         project.configure(codeOptions, c)
+    }
+
+    int getVersionCode() {
+        return codeOptions.versionCode
+    }
+
+    String getVersionName() {
+        return nameOptions.versionName
     }
 }

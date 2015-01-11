@@ -4,8 +4,8 @@ A plugin to generate the Android version code and version name automatically.
 
 ## Quick Start
 
-Add the advanced-build-version plugin to your build script and use the property `advancedVersioning.nameOptions.versionName` and
-`advancedVersioning.codeOptions.versionCode` where you need:
+Add the advanced-build-version plugin to your build script and use the property `advancedVersioning.versionName` and
+`advancedVersioning.versionCode` where you need:
 
 ```
 
@@ -23,8 +23,8 @@ buildscript {
 
 apply plugin: 'advanced-build-version'
 
-def appVersionName = advancedVersioning.nameOptions.versionName
-def appVersionCode = advancedVersioning.codeOptions.versionCode
+def appVersionName = advancedVersioning.versionName
+def appVersionCode = advancedVersioning.versionCode
 
 ```
 
@@ -64,8 +64,6 @@ advancedVersioning {
 ```
 will output `1.3`
 
-def appVersionName = advancedVersioning.nameOptions.versionName
-
 ## Version Code Configuration
 
 To customize version code in your `build.gradle` file write:
@@ -78,13 +76,33 @@ advancedVersioning {
 }
 ```
 
- `versionCodeType` can be one of following params:
+`versionCodeType` can be one of following params:
  
  * `org.moallemi.gradle.internal.VersionCodeType.DATE` formatted number e.g.: 1501101614
  * `org.moallemi.gradle.internal.VersionCodeType.JALALI_DATE` will output 931017
  * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_DATE` will output 101101614
- * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP` will output e.g: 24. this property stores
- VERSION_CODE in `version.properties` file in your project structure
+ * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP` will output e.g: 24. this
+ property stores AI_VERSION_CODE in `version.properties` file in build.gradle directory, you may
+ also change `dependsOnTasks` property to specify that on witch tasks should increase version code
+ (default is every task that contains 'release' in its name)
+
+```
+advancedVersioning {
+  codeOptions {
+      versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+      dependsOnTasks 'release' // defaultValue
+  }
+}
+```
+
+Setting multiple tasks for `dependsOnTasks` property:
+```
+advancedVersioning {
+  codeOptions {
+      versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+      dependsOnTasks 'debug', 'release', 'assemble'
+  }
+}
 
 
 
