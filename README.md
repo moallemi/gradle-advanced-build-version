@@ -7,8 +7,7 @@ A plugin to generate the Android version code and version name automatically.
 Add the advanced-build-version plugin to your build script and use the property `advancedVersioning.versionName` and
 `advancedVersioning.versionCode` where you need:
 
-```
-
+```groovy
 buildscript {
   repositories {
     maven() {
@@ -25,14 +24,13 @@ apply plugin: 'advanced-build-version'
 
 def appVersionName = advancedVersioning.versionName
 def appVersionCode = advancedVersioning.versionCode
-
 ```
 
 ## Version Name Configuration
 
 You can customize version name in your `build.gradle` file as follow:
 
-```
+```groovy
 advancedVersioning {
     nameOptions {
         versionMajor 1
@@ -44,8 +42,9 @@ advancedVersioning {
 ```
 the above configuration will output `1.3.6.8`
 
-there is no need to specify all params because they will be handled automatically. for example 
-```
+there is no need to specify all params because they will be handled automatically. for example
+
+```groovy
 advancedVersioning {
     nameOptions {
         versionMajor 1
@@ -54,7 +53,8 @@ advancedVersioning {
 }
 ```
 will output `1.0.0.8` and
-```
+
+```groovy
 advancedVersioning {
     nameOptions {
         versionMajor 1
@@ -62,13 +62,14 @@ advancedVersioning {
     }
 }
 ```
+
 will output `1.3`
 
 ## Version Code Configuration
 
 To customize version code in your `build.gradle` file write:
 
-```
+```groovy
 advancedVersioning {
     codeOptions {
         versionCodeType org.moallemi.gradle.internal.VersionCodeType.DATE
@@ -86,7 +87,7 @@ advancedVersioning {
  also change `dependsOnTasks` property to specify that on witch tasks should increase version code
  (default is every task that contains 'release' in its name)
 
-```
+```groovy
 advancedVersioning {
   codeOptions {
       versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
@@ -96,14 +97,12 @@ advancedVersioning {
 ```
 
 Setting multiple tasks for `dependsOnTasks` property:
-```
+```groovy
 advancedVersioning {
   codeOptions {
       versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
       dependsOnTasks 'debug', 'release', 'assemble'
   }
 }
-
-
-
+```
 
