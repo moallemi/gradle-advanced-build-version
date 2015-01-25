@@ -16,11 +16,16 @@ buildscript {
   }
 
   dependencies {
-    classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.0.0-SNAPSHOT'
+    classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.0.1-SNAPSHOT'
   }
 }
 
-apply plugin: 'advanced-build-version'
+apply plugin: 'org.moallemi.advanced-build-version'
+
+advancedVersioning {
+    nameOptions { }
+    codeOptions { }
+}
 
 def appVersionName = advancedVersioning.versionName
 def appVersionCode = advancedVersioning.versionCode

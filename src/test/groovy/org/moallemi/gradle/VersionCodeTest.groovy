@@ -12,7 +12,7 @@ import static org.fest.assertions.Assertions.assertThat
 
 public class VersionCodeTest {
     private Project project;
-    private static final PLUGIN_ID = 'advanced-build-version';
+    private static final PLUGIN_ID = 'org.moallemi.advanced-build-version';
 
     @BeforeMethod
     public void setUp() throws Exception {
