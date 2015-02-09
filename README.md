@@ -26,7 +26,6 @@ buildscript {
 }
 
 apply plugin: 'org.moallemi.advanced-build-version'
-
 ```
 
 ## How to use
