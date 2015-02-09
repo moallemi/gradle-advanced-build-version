@@ -2,7 +2,14 @@
 
 A plugin to generate the Android version code and version name automatically.
 
-## Quick Start
+## Contents
+1. [Installation](#installation)
+2. [How to use](#how-to-use)
+3. [Version Name Configuration](#version-name-configuration)
+4. [Version Code Configuration](#version-code-configuration)
+5. [File output options](#file-output-options)
+
+## Installation
 
 Add the advanced-build-version plugin to your build script and use the property `advancedVersioning.versionName` and
 `advancedVersioning.versionCode` where you need:
@@ -10,21 +17,22 @@ Add the advanced-build-version plugin to your build script and use the property 
 ```groovy
 buildscript {
   repositories {
-    maven() {
-        url("https://oss.sonatype.org/content/groups/public")
-    }
+      jcenter()
   }
 
   dependencies {
-    classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.0.1-SNAPSHOT'
+      classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.5.0'
   }
 }
 
 apply plugin: 'org.moallemi.advanced-build-version'
 
+## How to use
+
 advancedVersioning {
     nameOptions { }
     codeOptions { }
+    outputOptions { }
 }
 
 def appVersionName = advancedVersioning.versionName
@@ -111,3 +119,48 @@ advancedVersioning {
 }
 ```
 
+## File output options
+You can also rename the output generated apk file with this plugin. it can be done just by enabling 
+the `renameOutput` option:
+
+```groovy
+advancedVersioning {
+  outputOptions {
+      renameOutput true
+  }
+}
+```
+
+If your app name is MyApp with 2.7 version name and you are in debug mode, the output apk file name 
+will be: `MyApp-2.7-debug.apk`
+
+You can customize the output name by using this params:
+
+* `$appName`: name of main module
+* `$projectName`: name of root project
+* `$flavorName`: flavor name
+* `$buildType`: build type
+* `$versionName`: version name
+* `$versionCode`: version code
+
+```groovy
+advancedVersioning {
+  outputOptions {
+      renameOutput true
+      nameFormat '$appName-$buildType-$versionName'
+  }
+}
+```
+
+And you can also use custom string in `nameFormat` like:
+
+```groovy
+advancedVersioning {
+  outputOptions {
+      renameOutput true
+      nameFormat '$appName-google-play-$versionName'
+  }
+}
+
+If your app name is MyApp with 4.6.1 version name the output apk file name will be: 
+`MyApp-google-play-4.6.1.apk`

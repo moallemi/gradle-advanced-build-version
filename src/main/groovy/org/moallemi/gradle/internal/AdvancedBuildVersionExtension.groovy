@@ -10,12 +10,14 @@ class AdvancedBuildVersionExtension {
     final Project project;
     VersionNameOptions nameOptions
     VersionCodeOptions codeOptions
+    FileOutputOptions outputOptions
 
     @Inject
     AdvancedBuildVersionExtension(Project project) {
         this.project = project
         nameOptions = new VersionNameOptions()
         codeOptions = new VersionCodeOptions(project)
+        outputOptions = new FileOutputOptions()
     }
 
     void nameOptions(Closure c) {
@@ -26,6 +28,10 @@ class AdvancedBuildVersionExtension {
         project.configure(codeOptions, c)
     }
 
+    void outputOptions(Closure c) {
+        project.configure(outputOptions, c)
+    }
+
     int getVersionCode() {
         return codeOptions.versionCode
     }
@@ -33,4 +39,5 @@ class AdvancedBuildVersionExtension {
     String getVersionName() {
         return nameOptions.versionName
     }
+
 }
