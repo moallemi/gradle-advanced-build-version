@@ -138,18 +138,18 @@ will be: `MyApp-2.7-debug.apk`
 
 You can customize the output name by using this params:
 
-* `$appName`: name of main module
-* `$projectName`: name of root project
-* `$flavorName`: flavor name
-* `$buildType`: build type
-* `$versionName`: version name
-* `$versionCode`: version code
+* `${appName}`: name of main module
+* `${projectName}`: name of root project
+* `${flavorName}`: flavor name
+* `${buildType}`: build type
+* `${versionName}`: version name
+* `${versionCode}`: version code
 
 ```groovy
 advancedVersioning {
   outputOptions {
       renameOutput true
-      nameFormat '$appName-$buildType-$versionName'
+      nameFormat '${appName}-${buildType}-${versionName}'
   }
 }
 ```
@@ -160,9 +160,9 @@ And you can also use custom string in `nameFormat` like:
 advancedVersioning {
   outputOptions {
       renameOutput true
-      nameFormat '$appName-google-play-$versionName'
+      nameFormat '${appName}-google-play-${versionName}'
   }
-}
+}```
 
 If your app name is MyApp with 4.6.1 version name the output apk file name will be: 
 `MyApp-google-play-4.6.1.apk`
