@@ -96,7 +96,12 @@ class VersionCodeOptions {
                 return code
 
             case VersionCodeType.AUTO_INCREMENT_ONE_STEP:
-                versionPropsFile = new File(project.buildFile.getParent() + "/version.properties")
+                versionPropsFile = new File("version.properties")
+                // Create version.properties file if necessary
+                if (!versionPropsFile.exists()) {
+                    versionPropsFile.createNewFile()
+                }
+
                 if (versionPropsFile.canRead()) {
                     def Properties versionProps = new Properties()
                     versionProps.load(new FileInputStream(versionPropsFile))
