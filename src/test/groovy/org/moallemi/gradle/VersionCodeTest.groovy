@@ -62,20 +62,35 @@ public class VersionCodeTest {
         assertThat(versionCode).is(new SmallerThanCondition(Integer.MAX_VALUE))
     }
 
-//    @Test //TODO write test
-//    public void testAutoIncrementOneStep() throws Exception {
-//        project.advancedVersioning {
-//            codeOptions {
-//                versionCodeType VersionCodeType.AUTO_INCREMENT_ONE_STEP
-//            }
-//        }
-//        int versionCode = project.advancedVersioning.versionCode
-//        Reporter.log("versionCode :: AUTO_INCREMENT_ONE_STEP = " + versionCode, true);
-//        assertThat(versionCode).is(new SmallerThanCondition(Integer.MAX_VALUE))
-//    }
+    @Test
+    public void testAutoIncrementOneStep() {
+        int currentVersionCode = project.advancedVersioning.versionCode
+        project.advancedVersioning {
+            codeOptions {
+                versionCodeType VersionCodeType.AUTO_INCREMENT_ONE_STEP
+            }
+        }
+
+        assertThat(currentVersionCode).is(project.advancedVersioning.versionCode + 1)
+    }
+
+    @Test
+    public void testAutoCreatingVersionPropertiesFile() {
+        def versionFile = new File("version.properties")
+        versionFile.delete()
+
+        project.advancedVersioning {
+            codeOptions {
+                versionCodeType VersionCodeType.AUTO_INCREMENT_DATE
+            }
+        }
+
+        assertThat(versionFile.exists()).is(true)
+        assertThat(project.advancedVersioning.versionCode).is(1)
+    }
 
     class SmallerThanCondition extends Condition<Integer> {
-        
+
         private int first;
 
         public SmallerThanCondition(Integer first) {
