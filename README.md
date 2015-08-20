@@ -21,7 +21,7 @@ buildscript {
   }
 
   dependencies {
-      classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.5.0'
+      classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.5.1'
   }
 }
 
@@ -162,7 +162,8 @@ advancedVersioning {
       renameOutput true
       nameFormat '${appName}-google-play-${versionName}'
   }
-}```
+}
+```
 
 If your app name is MyApp with 4.6.1 version name the output apk file name will be: 
 `MyApp-google-play-4.6.1.apk`

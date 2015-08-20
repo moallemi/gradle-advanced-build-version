@@ -9,10 +9,13 @@ class AdvancedBuildVersionPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         def androidGradlePlugin = getAndroidPluginVersion(project)
-        if (androidGradlePlugin != null && !checkAndroidVersion(androidGradlePlugin.version)) {
+        if (androidGradlePlugin == null) {
+            throw new IllegalStateException("The Android Gradle plugin not found. the " +
+                    "\"advanced-build-version\" plugin only works with Android gradle library.")
+        } else if (!checkAndroidVersion(androidGradlePlugin.version)) {
             throw new IllegalStateException("The Android Gradle plugin ${androidGradlePlugin.version} is not supported.")
         }
-        
+
         def advancedVersioning = project.extensions.create("advancedVersioning", AdvancedBuildVersionExtension, project)
 
         project.afterEvaluate {
@@ -53,13 +56,17 @@ class AdvancedBuildVersionPlugin implements Plugin<Project> {
         return false
     }
 
-    def static getAndroidPluginVersion(project) {
-        return findClassPathDependencyVersion(project, 'com.android.tools.build', 'gradle')
+    def static getAndroidPluginVersion(Project project) {
+        def projectGradle = findClassPathDependencyVersion(project, 'com.android.tools.build', 'gradle')
+        if (projectGradle == null) {
+            projectGradle = findClassPathDependencyVersion(project.getRootProject(), 'com.android.tools.build', 'gradle')
+        }
+        return projectGradle
     }
 
-    def static findClassPathDependencyVersion(project, group, attributeId) {
+    def static findClassPathDependencyVersion(Project project, group, attributeId) {
         return project.buildscript.configurations.classpath.dependencies.find {
-            it.group != null && it.group.equals(group) && it.name.equals('gradle')
+            it.group != null && it.group.equals(group) && it.name.equals(attributeId)
         }
     }
 }

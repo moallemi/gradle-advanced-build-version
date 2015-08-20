@@ -9,3 +9,5 @@ classes
 .DS_Store
 /build
 /gradle.properties
+bintray_push.gradle
+maven_push.gradle

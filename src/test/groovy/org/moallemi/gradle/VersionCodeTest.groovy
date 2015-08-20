@@ -21,6 +21,11 @@ public class VersionCodeTest {
         project.task("clean")
         project.task("build")
 
+        project.buildscript {
+            dependencies {
+                classpath 'com.android.tools.build:gradle:1.3.0'
+            }
+        }
         project.allprojects {
             project.apply plugin: PLUGIN_ID
         }
