@@ -13,7 +13,7 @@ class AdvancedBuildVersionPlugin implements Plugin<Project> {
             throw new IllegalStateException("The Android Gradle plugin not found. the " +
                     "\"advanced-build-version\" plugin only works with Android gradle library.")
         } else if (!checkAndroidVersion(androidGradlePlugin.version)) {
-            throw new IllegalStateException("The Android Gradle plugin ${androidGradlePlugin.version} is not supported.")
+            throw new IllegalStateException("gradle-advanced-build-version says: The Android Gradle plugin ${androidGradlePlugin.version} is not supported.")
         }
 
         def advancedVersioning = project.extensions.create("advancedVersioning", AdvancedBuildVersionExtension, project)
@@ -44,7 +44,7 @@ class AdvancedBuildVersionPlugin implements Plugin<Project> {
         }
     }
 
-    private static final String[] SUPPORTED_ANDROID_VERSIONS = ['0.14.', '1.'];
+    private static final String[] SUPPORTED_ANDROID_VERSIONS = ['0.14.', '1.', '2.'];
 
     def static boolean checkAndroidVersion(String version) {
         for (String supportedVersion : SUPPORTED_ANDROID_VERSIONS) {
