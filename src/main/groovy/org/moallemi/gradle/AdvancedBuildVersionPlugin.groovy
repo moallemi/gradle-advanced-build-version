@@ -24,7 +24,7 @@ class AdvancedBuildVersionPlugin implements Plugin<Project> {
                     if (taskName.toLowerCase(Locale.ENGLISH).contains(dependentTask) &&
                             advancedVersioning.codeOptions.versionCodeType == VersionCodeType.AUTO_INCREMENT_ONE_STEP) {
                         def versionPropsFile = advancedVersioning.codeOptions.versionFile
-                        if (versionPropsFile.canRead()) {
+                        if (versionPropsFile != null && versionPropsFile.canRead()) {
                             def Properties versionProps = new Properties()
                             versionProps.load(new FileInputStream(versionPropsFile))
                             def code = advancedVersioning.versionCode
