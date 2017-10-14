@@ -2,9 +2,6 @@ package org.moallemi.gradle.internal
 
 import groovy.text.SimpleTemplateEngine
 import org.gradle.api.Project
-import org.gradle.api.logging.LogLevel
-import org.gradle.api.logging.Logger
-import org.gradle.api.logging.Logging
 import org.moallemi.gradle.AdvancedBuildVersionPlugin
 
 class FileOutputOptions {
@@ -36,22 +33,19 @@ class FileOutputOptions {
         def defaultTemplate = !variant.flavorName.equals("") && variant.flavorName != null ?
                 '$appName-$flavorName-$buildType-$versionName' : '$appName-$buildType-$versionName'
         def template = nameFormat == null ? defaultTemplate : nameFormat
-        def fileName = templateEngine.createTemplate(template).make(map).toString();
-        if (variant.buildType.zipAlignEnabled) {
-            def file = variant.outputs[0].outputFile
-            variant.outputs[0].outputFile = new File(file.parent, fileName + ".apk")
-        }
+        def fileName = templateEngine.createTemplate(template).make(map).toString()
 
         def androidGradlePlugin = AdvancedBuildVersionPlugin.getAndroidPluginVersion(project)
-        if (androidGradlePlugin != null && androidGradlePlugin.version.equals("1.3.0")) {
-            // android gradle 1.3.0 bug: https://code.google.com/p/android/issues/detail?id=182248
-            project.getLogger().log(LogLevel.WARN, "could not make unaligned file. You should use android gradle 1.3.1 and above")
-            return;
-        }
-        def file = variant.outputs[0].packageApplication.outputFile
-        variant.outputs[0].packageApplication.outputFile =
-                new File(file.parent, fileName + "-unaligned.apk")
-    }
 
+        if (androidGradlePlugin != null && androidGradlePlugin.version.startsWith("3.")) {
+            variant.outputs.all { output ->
+                outputFileName = "${fileName}.apk"
+            }
+        } else {
+            variant.outputs.each { output ->
+                output.outputFile = new File(output.outputFile.parent, fileName + ".apk")
+            }
+        }
+    }
 
 }
