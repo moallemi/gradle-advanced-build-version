@@ -4,10 +4,6 @@ apply plugin: 'groovy'
 group = GROUP
 version = VERSION_NAME
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.8'
-}
-
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
