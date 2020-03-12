@@ -2,8 +2,12 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.70'
     id 'java-gradle-plugin'
 
+    id 'com.diffplug.gradle.spotless' version '3.27.2'
+
     id "maven-publish"
 }
+
+apply from: 'configs/spotless.gradle'
 
 repositories {
     jcenter()
