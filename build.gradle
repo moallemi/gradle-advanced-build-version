@@ -17,6 +17,15 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.70"
 
     implementation 'com.android.tools.build:gradle:0.14.0'
+
+    testImplementation gradleTestKit()
+    testImplementation 'junit:junit:4.13'
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 project.ext {
@@ -33,7 +42,7 @@ gradlePlugin {
     plugins {
         myPlugin {
             id = project.pluginId
-            implementationClass = 'org.moallemi.gradle.AdvancedBuildVersionPlugin'
+            implementationClass = 'me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin'
         }
     }
 }
