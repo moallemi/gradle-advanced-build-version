@@ -5,13 +5,13 @@ import org.gradle.api.Project
 
 open class AdvancedBuildVersionConfig(private val project: Project) {
 
-    private var nameOptions: VersionNameOptions = VersionNameOptions()
+    private var versionNameConfig: VersionNameConfig = VersionNameConfig()
 
     val versionName by lazy {
-        nameOptions.versionName
+        versionNameConfig.versionName
     }
 
     fun nameOptions(closure: Closure<*>) {
-        project.configure(nameOptions, closure)
+        project.configure(versionNameConfig, closure)
     }
 }

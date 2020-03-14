@@ -2,7 +2,7 @@ package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import org.gradle.api.GradleException
 
-class VersionNameOptions {
+class VersionNameConfig {
     private var versionMajor: Int? = null
     private var versionMinor: Int? = null
     private var versionPatch: Int? = null
