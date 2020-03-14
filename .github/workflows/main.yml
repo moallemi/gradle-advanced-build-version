@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ dev ]
+    branches: [master, dev]
   pull_request:
-    branches: [ dev ]
+    branches: [master, dev]
 
 jobs:
   build:
@@ -19,12 +19,16 @@ jobs:
         with:
           java-version: 8
 
+      - name: Copy CI gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
       - name: Setup build cache
-        uses: actions/cache@v1
+        uses: actions/cache@v1.1.0
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
       - name: Run tests
         run: ./gradlew test
