@@ -8,6 +8,7 @@ plugins {
 }
 
 apply from: 'configs/spotless.gradle'
+apply from: 'configs/jacoco.gradle'
 
 repositories {
     jcenter()
