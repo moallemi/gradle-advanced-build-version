@@ -30,5 +30,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Run tests
-        run: ./gradlew test
+      - name: Run tests with code coverage
+        run: ./gradlew jacocoTestReport
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests
