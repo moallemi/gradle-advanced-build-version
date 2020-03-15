@@ -1,4 +1,4 @@
-package me.moallemi.gradle.advancedbuildversion.gradleextensions
+package org.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import org.gradle.api.GradleException
 
