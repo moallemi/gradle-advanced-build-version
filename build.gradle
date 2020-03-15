@@ -21,11 +21,18 @@ dependencies {
 
     testImplementation gradleTestKit()
     testImplementation 'junit:junit:4.13'
+    testImplementation "io.mockk:mockk:1.9.3"
 }
 
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
     }
 }
 
@@ -43,7 +50,7 @@ gradlePlugin {
     plugins {
         myPlugin {
             id = project.pluginId
-            implementationClass = 'me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin'
+            implementationClass = 'org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin'
         }
     }
 }
