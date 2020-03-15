@@ -26,4 +26,8 @@ open class AdvancedBuildVersionConfig(private val project: Project) {
     fun codeOptions(closure: Closure<*>) {
         project.configure(versionCodeConfig, closure)
     }
+
+    fun outputOptions(closure: Closure<*>) {
+        project.configure(outputConfig, closure)
+    }
 }
