@@ -1,1 +1,0 @@
-start ConEmu64.exe /cmdlist  ^> "%ProgramFiles(x86)%\Git\bin\sh.exe" --login -i
