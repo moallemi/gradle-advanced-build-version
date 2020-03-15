@@ -7,10 +7,15 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.internal.impldep.org.eclipse.jgit.errors.NotSupportedException
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
+import org.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
+import org.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 
 class AdvancedBuildVersionPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+        checkMinimumGradleVersion()
+        checkAndroidGradleVersion(project)
+
         val advancedBuildVersionPlugin = project.extensions.create(
             "advancedVersioning", AdvancedBuildVersionConfig::class.java, project
         )
