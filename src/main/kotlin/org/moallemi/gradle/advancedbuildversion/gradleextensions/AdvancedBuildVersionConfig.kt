@@ -9,6 +9,8 @@ open class AdvancedBuildVersionConfig(private val project: Project) {
 
     internal var versionCodeConfig = VersionCodeConfig(project)
 
+    internal var outputConfig = FileOutputConfig(project)
+
     val versionName by lazy {
         versionNameConfig.versionName
     }
