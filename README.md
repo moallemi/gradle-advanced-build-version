@@ -2,6 +2,8 @@
 
 A plugin to generate the Android version code and version name automatically.
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/moallemi/gradle-advanced-build-version/CI) ![Maven Central](https://img.shields.io/maven-central/v/org.moallemi.gradle.advanced-build-version/gradle-plugin) ![Bintray](https://img.shields.io/bintray/v/bintray/jcenter/org.moallemi.gradle.advanced-build-version:gradle-plugin?label=jcenter) ![Codecov branch](https://img.shields.io/codecov/c/github/moallemi/gradle-advanced-build-version/dev)
+
 ## Contents
 1. [Installation](#installation)
 2. [How to use](#how-to-use)
