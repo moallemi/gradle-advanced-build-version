@@ -12,21 +12,17 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.moallemi.gradle.advancedbuildversion.utils.GRADLE_MIN_VERSION
 import org.moallemi.gradle.advancedbuildversion.utils.ProjectProps
-import org.moallemi.gradle.advancedbuildversion.utils.ProjectSetupRule
 
 class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
     @get:Rule
     var testProjectRoot = TemporaryFolder()
 
-    @get:Rule
-    val projectSetup = ProjectSetupRule()
-
     @Test
     fun `low Gradle Version fails build`() {
         writeBuildGradle(
             """plugins {
-               id "$PLUGIN_ID"
+               id "$PLUGIN_ID" version "$PLUGIN_VERSION"
              }""".trimIndent()
         )
 
@@ -44,38 +40,79 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     }
 
     @Test
-    fun `missing android gradle plugin fails build`() {
+    fun `missing android gradle plugin dependency fails build`() {
         publishToLocalMaven()
 
         writeBuildGradle(
             """
                 buildscript {
                   repositories {
-                      mavenLocal()
+                    jcenter()
+                    google()
+                    mavenLocal()
                   }
                 
                   dependencies {
-                      classpath '$CLASSPATH:$PLUGIN_VERSION'
+                    classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
                 }
                 apply plugin: "$PLUGIN_ID"
                 """.trimIndent()
         )
 
-        assertThrows(UnexpectedBuildFailure::class.java) {
+        val exception = assertThrows(UnexpectedBuildFailure::class.java) {
             GradleRunner.create()
                 .withProjectDir(testProjectRoot.root)
                 .withPluginClasspath()
                 .withGradleVersion("5.0")
                 .build()
         }
+        assertThat(
+            exception.message,
+            containsString("gradle-advanced-build-version only works with Android gradle library.")
+        )
+    }
+
+    @Test
+    fun `build fails when android gradle plugin is not applied`() {
+        publishToLocalMaven()
+
+        writeBuildGradle(
+            """
+                buildscript {
+                  repositories {
+                    google()
+                    jcenter()
+                    mavenLocal()
+                  }
+                
+                  dependencies {
+                    classpath 'com.android.tools.build:gradle:3.1.0'
+                    classpath '$CLASSPATH:$PLUGIN_VERSION'
+                  }
+                }
+                apply plugin: "$PLUGIN_ID"
+                """.trimIndent()
+        )
+
+        val exception = assertThrows(UnexpectedBuildFailure::class.java) {
+            GradleRunner.create()
+                .withProjectDir(testProjectRoot.root)
+                .withPluginClasspath()
+                .withGradleVersion("5.0")
+                .build()
+        }
+        assertThat(
+            exception.message,
+            containsString("gradle-advanced-build-version only works with android application modules")
+        )
     }
 
     @Test
     fun `android plugin and gradle plugin supported`() {
         publishToLocalMaven()
 
-        File("src/test/test-data", "app").copyRecursively(projectSetup.rootDir)
+        File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
 
         writeBuildGradle(
             """
@@ -99,17 +136,67 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   compileSdkVersion 29
                   buildToolsVersion "29.0.2"
                   defaultConfig {
+                    applicationId "com.example.myapplication"
+                    minSdkVersion 14
+                    targetSdkVersion 22
+                    versionCode 1
+                    versionName "1.0"
+                  }
+                }
+                """.trimIndent()
+        )
+
+        val output = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion("5.0")
+            .build()
+        assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
+    }
+
+    @Test
+    fun `fails if applied on library plugin`() {
+        publishToLocalMaven()
+
+        writeBuildGradle(
+            """
+                buildscript {
+                  repositories {
+                    google()
+                    jcenter()
+                    mavenLocal()
+                  }
+                
+                  dependencies {
+                    classpath 'com.android.tools.build:gradle:3.1.0'
+                    classpath '$CLASSPATH:$PLUGIN_VERSION'
+                  }
+                }
+                
+                apply plugin: 'com.android.library'
+                apply plugin: "$PLUGIN_ID"
+                
+                android {
+                  compileSdkVersion 29
+                  buildToolsVersion "29.0.2"
+                  defaultConfig {
                       minSdkVersion 14
                   }
                 }
                 """.trimIndent()
         )
 
-        GradleRunner.create()
-            .withProjectDir(projectSetup.rootDir)
-            .withPluginClasspath()
-            .withGradleVersion("5.0")
-            .build()
+        val exception = assertThrows(UnexpectedBuildFailure::class.java) {
+            GradleRunner.create()
+                .withProjectDir(testProjectRoot.root)
+                .withPluginClasspath()
+                .withGradleVersion("5.0")
+                .build()
+        }
+        assertThat(
+            exception.message,
+            containsString("gradle-advanced-build-version only works with android application modules")
+        )
     }
 
     private fun publishToLocalMaven() {

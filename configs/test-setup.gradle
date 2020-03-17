@@ -1,6 +1,12 @@
 
+apply plugin: 'com.adarshr.test-logger'
+
+testlogger {
+    showSimpleNames true
+}
+
 ext.generatedResources = "$buildDir/generated/resources"
-ext.rootProjectPath = "rootProjectPath"
+
 sourceSets {
     test.java.srcDirs += 'src/main/kotlin'
     test.resources.srcDirs += generatedResources
@@ -15,12 +21,11 @@ task generateSdkResource() {
     doLast {
         // Properties.write will have a timestamp, that invalidates the task,
         // so we don't use it and write a file manually
-        new File(generatedResources, "sdk.prop").withWriter('UTF-8') { writer ->
+        new File("$generatedResources", "sdk.prop").withWriter('UTF-8') { writer ->
             writer.write("compileSdkVersion=29\n")
             writer.write("buildToolsVersion=29.0.2\n")
             writer.write("minSdkVersion=14\n")
             writer.write("advancedBuildPluginVersion=${project.version}\n")
-            writer.write("rootProjectPath=$rootProjectPath\n")
         }
     }
 }

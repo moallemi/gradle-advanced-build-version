@@ -8,15 +8,16 @@ import org.gradle.util.GradleVersion
 val GRADLE_MIN_VERSION = GradleVersion.version("5.0")
 
 fun checkAndroidGradleVersion(project: Project) {
-    val androidGradlePlugin =
-        getAndroidPluginVersion(project)
+    val androidGradlePlugin = getAndroidPluginVersion(project)
     if (androidGradlePlugin == null) {
         throw IllegalStateException(
-            "The Android Gradle plugin not found. the " +
-                "\"gradle-advanced-build-version\" plugin only works with Android gradle library."
+            "The Android Gradle plugin not found. " +
+                "gradle-advanced-build-version only works with Android gradle library."
         )
     } else if (!checkAndroidVersion(androidGradlePlugin.version)) {
-        throw GradleException("gradle-advanced-build-version says: The Android Gradle plugin ${androidGradlePlugin.version} is not supported.")
+        throw GradleException("gradle-advanced-build-version does not support Android Gradle plugin ${androidGradlePlugin.version}")
+    } else if (!project.plugins.hasPlugin("com.android.application")) {
+        throw GradleException("gradle-advanced-build-version only works with android application modules")
     }
 }
 

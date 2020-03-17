@@ -3,6 +3,7 @@ plugins {
     id 'java-gradle-plugin'
 
     id 'com.diffplug.gradle.spotless' version '3.27.2'
+    id 'com.adarshr.test-logger' version '2.0.0'
 
     id "maven-publish"
 }

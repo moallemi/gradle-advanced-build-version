@@ -2,6 +2,7 @@ package org.moallemi.gradle.advancedbuildversion
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -16,6 +17,8 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
         checkMinimumGradleVersion()
         checkAndroidGradleVersion(project)
 
+        println("Applying Advanced Build Version Plugin")
+
         val advancedBuildVersionPlugin = project.extensions.create(
             "advancedVersioning", AdvancedBuildVersionConfig::class.java, project
         )
@@ -24,7 +27,9 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
             project.plugins.all { plugin ->
                 when (plugin) {
                     is AppPlugin -> configureAndroid(project, advancedBuildVersionPlugin)
-                    is LibraryPlugin -> throw NotSupportedException("Android library module is not supported yet")
+                    is LibraryPlugin, is FeaturePlugin -> throw NotSupportedException(
+                        "Android library module is not supported yet"
+                    )
                 }
             }
         }
