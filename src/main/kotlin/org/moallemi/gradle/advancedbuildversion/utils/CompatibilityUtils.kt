@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.util.GradleVersion
 
-private val GRADLE_MIN_VERSION = GradleVersion.version("5.9")
+val GRADLE_MIN_VERSION = GradleVersion.version("5.0")
 
 fun checkAndroidGradleVersion(project: Project) {
     val androidGradlePlugin =

@@ -67,3 +67,5 @@ publishing {
         }
     }
 }
+
+apply from: 'configs/test-setup.gradle'
