@@ -8,7 +8,6 @@ testlogger {
 ext.generatedResources = "$buildDir/generated/resources"
 
 sourceSets {
-    test.java.srcDirs += 'src/main/kotlin'
     test.resources.srcDirs += generatedResources
 }
 

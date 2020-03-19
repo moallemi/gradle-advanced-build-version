@@ -5,8 +5,6 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.util.GradleVersion
 
-val GRADLE_MIN_VERSION = GradleVersion.version("5.0")
-
 fun checkAndroidGradleVersion(project: Project) {
     val androidGradlePlugin = getAndroidPluginVersion(project)
     if (androidGradlePlugin == null) {
@@ -45,3 +43,5 @@ private fun findClassPathDependencyVersion(project: Project, group: String, attr
     project.buildscript.configurations.getByName("classpath").dependencies.find {
         group == it.group && it.name == attributeId
     }
+
+val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("5.0")
