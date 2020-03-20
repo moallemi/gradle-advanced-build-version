@@ -1,23 +1,17 @@
 package org.moallemi.gradle.advancedbuildversion.integration
 
 import com.android.build.gradle.AppPlugin
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import junit.framework.Assert.assertEquals
 import org.gradle.api.Project
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
 import org.gradle.testfixtures.ProjectBuilder
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.lessThan
 import org.junit.Test
 import org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin
 import org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
-
 
 class VersionCodeConfigTest {
 
