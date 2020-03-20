@@ -15,6 +15,9 @@ import org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Compa
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
+
 
 class VersionCodeConfigTest {
 
@@ -24,7 +27,7 @@ class VersionCodeConfigTest {
 
         advancedVersioning.versionCodeConfig.versionCodeType(DATE)
 
-        assertEquals(advancedVersioning.versionCode, byDate())
+        assertThat(advancedVersioning.versionCode, lessThan(Integer.MAX_VALUE))
     }
 
     @Test
@@ -33,7 +36,7 @@ class VersionCodeConfigTest {
 
         advancedVersioning.versionCodeConfig.versionCodeType(AUTO_INCREMENT_DATE)
 
-        assertEquals(advancedVersioning.versionCode, byDateAutoIncrement())
+        assertThat(advancedVersioning.versionCode, lessThan(Integer.MAX_VALUE))
     }
 
     private fun givenProject(): AdvancedBuildVersionConfig {
@@ -46,20 +49,5 @@ class VersionCodeConfigTest {
         project.plugins.apply(AppPlugin::class.java)
         project.plugins.apply(AdvancedBuildVersionPlugin::class.java)
         return project.extensions.getByName(EXTENSION_NAME) as AdvancedBuildVersionConfig
-    }
-
-    private fun byDate(): Int {
-        val calendar: Calendar = Calendar.getInstance(Locale.ENGLISH)
-        val year: Int = (calendar.get(Calendar.YEAR) - 2000) * 100000000
-        val month: Int = (calendar.get(Calendar.MONTH) + 1) * 1000000
-        val day: Int = calendar.get(Calendar.DAY_OF_MONTH) * 10000
-        val hour: Int = calendar.get(Calendar.HOUR_OF_DAY) * 100
-        val minutes: Int = calendar.get(Calendar.MINUTE)
-        return year + month + day + hour + minutes
-    }
-
-    private fun byDateAutoIncrement(): Int {
-        val formatter = SimpleDateFormat("yyMMddHHmm", Locale.ENGLISH)
-        return formatter.format(Date()).toInt() - 1400000000
     }
 }
