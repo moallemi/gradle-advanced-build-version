@@ -20,7 +20,7 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
         println("Applying Advanced Build Version Plugin")
 
         val advancedBuildVersionPlugin = project.extensions.create(
-            "advancedVersioning", AdvancedBuildVersionConfig::class.java, project
+            EXTENSION_NAME, AdvancedBuildVersionConfig::class.java, project
         )
 
         project.afterEvaluate {
@@ -40,4 +40,8 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
             config.versionCodeConfig.increaseVersionCodeIfPossible()
             config.outputConfig.renameOutputApkIfPossible(applicationVariants)
         }
+
+    companion object {
+        const val EXTENSION_NAME = "advancedVersioning"
+    }
 }

@@ -15,8 +15,6 @@ import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType
 
 class VersionCodeConfig(private val project: Project) {
 
-    private val formatter: SimpleDateFormat = SimpleDateFormat("yyMMddHHmm", Locale.ENGLISH)
-
     private var versionCodeType = AUTO_INCREMENT_ONE_STEP
 
     private var dependsOnTasks: List<String> = listOf("release")
@@ -35,7 +33,7 @@ class VersionCodeConfig(private val project: Project) {
         get() = when (versionCodeType) {
             DATE -> byDate()
             AUTO_INCREMENT_ONE_STEP -> byAutoIncrementOneStep()
-            AUTO_INCREMENT_DATE -> formatter.format(Date()).toInt() - 1400000000
+            AUTO_INCREMENT_DATE -> byDateAutoIncrement()
         }
 
     internal fun increaseVersionCodeIfPossible() =
@@ -71,6 +69,11 @@ class VersionCodeConfig(private val project: Project) {
             "Could not read version.properties file in path ${versionPropsFile.absolutePath}." +
                 " Please create this file and add it to your VCS (git, svn, ...)."
         )
+    }
+
+    private fun byDateAutoIncrement(): Int {
+        val formatter = SimpleDateFormat("yyMMddHHmm", Locale.ENGLISH)
+        return formatter.format(Date()).toInt() - 1400000000
     }
 
     companion object {
