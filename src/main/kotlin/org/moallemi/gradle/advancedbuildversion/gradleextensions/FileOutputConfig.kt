@@ -54,6 +54,7 @@ class FileOutputConfig(private val project: Project) {
         variant.outputs.all { output ->
             val outputImpl = output as BaseVariantOutputImpl
             outputImpl.outputFileName = "$fileName.apk"
+            println("outputFileName renamed to $fileName.apk")
         }
     }
 }

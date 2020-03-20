@@ -155,6 +155,66 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     }
 
     @Test
+    fun `outputOptions renameOutput is true`() {
+        publishToLocalMaven()
+
+        File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+
+        writeBuildGradle(
+            """
+                buildscript {
+                  repositories {
+                    google()
+                    jcenter()
+                    mavenLocal()
+                  }
+                
+                  dependencies {
+                    classpath 'com.android.tools.build:gradle:3.1.0'
+                    classpath '$CLASSPATH:$PLUGIN_VERSION'
+                  }
+                }
+                
+                repositories {
+                   google()
+                   jcenter()
+                }
+                
+                apply plugin: 'com.android.application'
+                apply plugin: "$PLUGIN_ID"
+                
+                android {
+                  compileSdkVersion 29
+                  buildToolsVersion "29.0.2"
+                  defaultConfig {
+                    applicationId "com.example.myapplication"
+                    minSdkVersion 14
+                    targetSdkVersion 22
+                    versionCode 1
+                    versionName "1.0"
+                  }
+                }
+                
+                advancedVersioning {
+                  outputOptions {
+                      renameOutput true
+                      nameFormat 'MyApp-${'$'}{versionName}'
+                  }
+                }
+                """.trimIndent()
+        )
+
+        val output = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion("5.0")
+            .withArguments("assemble")
+            .build()
+        assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
+        assertThat(output.output, containsString("outputFileName renamed to MyApp-1.0.apk"))
+    }
+
+    @Test
     fun `fails if applied on library plugin`() {
         publishToLocalMaven()
 
