@@ -37,8 +37,8 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
 
     private fun configureAndroid(project: Project, config: AdvancedBuildVersionConfig) =
         with(project.extensions.getByType(AppExtension::class.java)) {
-            config.versionCodeConfig.increaseVersionCodeIfPossible()
-            config.outputConfig.renameOutputApkIfPossible(applicationVariants)
+            config.increaseVersionCodeIfPossible()
+            config.renameOutputApkIfPossible(applicationVariants)
         }
 
     companion object {

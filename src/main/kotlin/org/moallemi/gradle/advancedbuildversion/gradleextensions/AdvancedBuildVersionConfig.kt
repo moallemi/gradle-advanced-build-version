@@ -1,11 +1,13 @@
 package org.moallemi.gradle.advancedbuildversion.gradleextensions
 
+import com.android.build.gradle.api.ApplicationVariant
 import groovy.lang.Closure
+import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 
 open class AdvancedBuildVersionConfig(private val project: Project) {
 
-    private var versionNameConfig = VersionNameConfig()
+    internal var versionNameConfig = VersionNameConfig()
 
     internal var versionCodeConfig = VersionCodeConfig(project)
 
@@ -29,5 +31,13 @@ open class AdvancedBuildVersionConfig(private val project: Project) {
 
     fun outputOptions(closure: Closure<*>) {
         project.configure(outputConfig, closure)
+    }
+
+    fun increaseVersionCodeIfPossible() {
+        versionCodeConfig.increaseVersionCodeIfPossible()
+    }
+
+    fun renameOutputApkIfPossible(variants: DomainObjectSet<ApplicationVariant>) {
+        outputConfig.renameOutputApkIfPossible(variants)
     }
 }
