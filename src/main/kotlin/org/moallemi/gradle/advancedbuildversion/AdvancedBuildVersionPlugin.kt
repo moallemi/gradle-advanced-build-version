@@ -27,8 +27,11 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
             project.plugins.all { plugin ->
                 when (plugin) {
                     is AppPlugin -> configureAndroid(project, advancedBuildVersionPlugin)
-                    is LibraryPlugin, is FeaturePlugin -> throw NotSupportedException(
-                        "Android library module is not supported yet"
+                    is FeaturePlugin -> throw NotSupportedException(
+                        "Feature module is not supported"
+                    )
+                    is LibraryPlugin -> throw NotSupportedException(
+                        "Library module is not supported yet"
                     )
                 }
             }
