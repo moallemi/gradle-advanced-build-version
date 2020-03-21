@@ -27,14 +27,31 @@ class VersionNameConfigTest {
     }
 
     @Test
-    fun `version major is 1_0`() {
+    fun `expect exception when versionMajor is less than 0`() {
+        versionNameConfig.versionMajor(-1)
+
+        val exception = assertThrows(GradleException::class.java) {
+            versionNameConfig.versionName
+        }
+        assertEquals(exception.message, "nameOptions.versionMajor could not be null or less than 0")
+    }
+
+    @Test
+    fun `versionCode is 0_0`() {
+        versionNameConfig.versionMajor(0)
+
+        assertEquals(versionNameConfig.versionName, "0.0")
+    }
+
+    @Test
+    fun `versionCode is 1_0`() {
         versionNameConfig.versionMajor(1)
 
         assertEquals(versionNameConfig.versionName, "1.0")
     }
 
     @Test
-    fun `version major is 1_3`() {
+    fun `versionCode is 1_3`() {
         versionNameConfig.apply {
             versionMajor(1)
             versionMinor(3)
@@ -44,7 +61,7 @@ class VersionNameConfigTest {
     }
 
     @Test
-    fun `version major is 1_0_3`() {
+    fun `versionCode is 1_0_3`() {
         versionNameConfig.apply {
             versionMajor(1)
             versionPatch(3)
@@ -54,7 +71,7 @@ class VersionNameConfigTest {
     }
 
     @Test
-    fun `version major is 1_0_0_3`() {
+    fun `versionCode is 1_0_0_3`() {
         versionNameConfig.apply {
             versionMajor(1)
             versionBuild(3)
@@ -64,7 +81,7 @@ class VersionNameConfigTest {
     }
 
     @Test
-    fun `version major is 1_2_3`() {
+    fun `versionCode is 1_2_3`() {
         versionNameConfig.apply {
             versionMajor(1)
             versionMinor(2)
@@ -75,7 +92,7 @@ class VersionNameConfigTest {
     }
 
     @Test
-    fun `version major is 1_0_3_4`() {
+    fun `versionCode is 1_0_3_4`() {
         versionNameConfig.apply {
             versionMajor(1)
             versionPatch(3)
@@ -86,7 +103,7 @@ class VersionNameConfigTest {
     }
 
     @Test
-    fun `version major is 1_2_0_3`() {
+    fun `versionCode is 1_2_0_3`() {
         versionNameConfig.apply {
             versionMajor(1)
             versionMinor(2)
