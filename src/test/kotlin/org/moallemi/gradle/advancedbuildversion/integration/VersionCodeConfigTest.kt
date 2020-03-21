@@ -21,7 +21,7 @@ class VersionCodeConfigTest {
 
         advancedVersioning.versionCodeConfig.versionCodeType(DATE)
 
-        assertThat(advancedVersioning.versionCode, lessThan(Integer.MAX_VALUE))
+        assertThat(advancedVersioning.versionCode, lessThan(MAX_VERSION_CODE))
     }
 
     @Test
@@ -30,7 +30,7 @@ class VersionCodeConfigTest {
 
         advancedVersioning.versionCodeConfig.versionCodeType(AUTO_INCREMENT_DATE)
 
-        assertThat(advancedVersioning.versionCode, lessThan(Integer.MAX_VALUE))
+        assertThat(advancedVersioning.versionCode, lessThan(MAX_VERSION_CODE))
     }
 
     private fun givenProject(): AdvancedBuildVersionConfig {
@@ -43,5 +43,10 @@ class VersionCodeConfigTest {
         project.plugins.apply(AppPlugin::class.java)
         project.plugins.apply(AdvancedBuildVersionPlugin::class.java)
         return project.extensions.getByName(EXTENSION_NAME) as AdvancedBuildVersionConfig
+    }
+
+    companion object {
+        // Based on https://developer.android.com/studio/publish/versioning
+        private const val MAX_VERSION_CODE = 2_100_000_000
     }
 }
