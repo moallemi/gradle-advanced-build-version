@@ -35,11 +35,12 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
         }
     }
 
-    private fun configureAndroid(project: Project, config: AdvancedBuildVersionConfig) =
-        with(project.extensions.getByType(AppExtension::class.java)) {
-            config.increaseVersionCodeIfPossible()
-            config.renameOutputApkIfPossible(applicationVariants)
-        }
+    private fun configureAndroid(project: Project, config: AdvancedBuildVersionConfig) {
+        config.increaseVersionCodeIfPossible()
+
+        val appExtension = project.extensions.getByType(AppExtension::class.java)
+        config.renameOutputApkIfPossible(appExtension.applicationVariants)
+    }
 
     companion object {
         const val EXTENSION_NAME = "advancedVersioning"
