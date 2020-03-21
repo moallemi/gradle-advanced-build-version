@@ -69,6 +69,18 @@ class AdvancedBuildVersionConfigTest {
         }
     }
 
+    @Test
+    fun `increaseVersionCodeIfPossible runs`() {
+        every { project.gradle.startParameter.taskNames } returns mockk(relaxed = true)
+
+        config.increaseVersionCodeIfPossible()
+    }
+
+    @Test
+    fun `renameOutputApkIfPossible runs`() {
+        config.renameOutputApkIfPossible(mockk())
+    }
+
     private fun givenProject() {
         every { project.configure(any<Any>(), any()) } returns mockk()
     }
