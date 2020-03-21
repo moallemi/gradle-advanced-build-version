@@ -31,12 +31,12 @@ private fun checkAndroidVersion(version: String?) =
 private fun getAndroidPluginVersion(project: Project): Dependency? =
     findClassPathDependencyVersion(
         project,
-        "com.android.tools.build",
-        "gradle"
+        ANDROID_GRADLE_PLUGIN_GROUP,
+        ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
     ) ?: findClassPathDependencyVersion(
         project.rootProject,
-        "com.android.tools.build",
-        "gradle"
+        ANDROID_GRADLE_PLUGIN_GROUP,
+        ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
     )
 
 private fun findClassPathDependencyVersion(project: Project, group: String, attributeId: String) =
@@ -44,4 +44,6 @@ private fun findClassPathDependencyVersion(project: Project, group: String, attr
         group == it.group && it.name == attributeId
     }
 
-val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("5.0")
+internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("5.0")
+internal const val ANDROID_GRADLE_PLUGIN_GROUP = "com.android.tools.build"
+internal const val ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID = "gradle"

@@ -21,6 +21,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
+import org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import org.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
 import org.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
@@ -65,12 +66,17 @@ class AdvancedBuildVersionPluginTest {
         val pluginsSlot = slot<Action<in Plugin<*>>>()
         every {
             project.plugins.all(capture(pluginsSlot))
-        } just runs
-        // answers { pluginsSlot.captured.execute(applicationPlugin) }
+        } answers { pluginsSlot.captured.execute(applicationPlugin) }
+
+        every {
+            project.extensions.create(
+                EXTENSION_NAME, AdvancedBuildVersionConfig::class.java, project
+            )
+        } returns mockk(relaxUnitFun = true)
 
         every {
             project.extensions.getByType(AppExtension::class.java)
-        } returns mockk() {
+        } returns mockk {
             every { applicationVariants } returns mockk()
         }
 
@@ -103,7 +109,7 @@ class AdvancedBuildVersionPluginTest {
     }
 
     @Test
-    fun `fails on applying to Feature Library module`() {
+    fun `fails on applying to Android Feature module`() {
 
         val featurePlugin = mockk<FeaturePlugin>()
         val pluginsSlot = slot<Action<in Plugin<*>>>()
