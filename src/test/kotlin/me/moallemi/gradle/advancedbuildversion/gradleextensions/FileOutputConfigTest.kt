@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.gradleextensions
+package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.api.BaseVariantOutput

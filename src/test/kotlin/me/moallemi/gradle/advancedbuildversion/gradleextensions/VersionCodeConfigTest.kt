@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.gradleextensions
+package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -23,15 +23,15 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 import junit.framework.TestCase.assertEquals
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
+import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
-import org.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 
 class VersionCodeConfigTest {
 

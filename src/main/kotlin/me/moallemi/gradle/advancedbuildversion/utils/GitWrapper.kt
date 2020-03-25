@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.utils
+package me.moallemi.gradle.advancedbuildversion.utils
 
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Repository

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.gradleextensions
+package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import com.android.build.gradle.api.ApplicationVariant
 import groovy.lang.Closure
+import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
-import org.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 
 open class AdvancedBuildVersionConfig(private val project: Project) {
 

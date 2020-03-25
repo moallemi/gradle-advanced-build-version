@@ -5,7 +5,9 @@ plugins {
     id 'com.diffplug.gradle.spotless' version '3.27.2'
     id 'com.adarshr.test-logger' version '2.0.0'
 
+    id "com.jfrog.bintray" version "1.8.4"
     id "maven-publish"
+    id "signing"
 }
 
 apply from: 'configs/spotless.gradle'
@@ -33,41 +35,15 @@ compileKotlin {
     }
 }
 
-test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
-}
-
-project.ext {
-    artifactId = 'gradle-plugin'
-    name = 'Gradle Advanced Build Version Plugin'
-    pluginId = 'org.moallemi.advanced-build-version'
-}
-
-project.description = "A plugin to generate the Android version code and version name automatically."
-project.group = "org.moallemi.gradle.advanced-build-version"
-project.version = "1.7.0-SNAPSHOT"
-
+project.ext.pluginId = 'me.moallemi.advanced-build-version'
 gradlePlugin {
     plugins {
         myPlugin {
             id = project.pluginId
-            implementationClass = 'org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin'
-        }
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = project.group
-            artifactId = project.artifactId
-            version = project.version
-
-            from components.java
+            implementationClass = 'me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin'
         }
     }
 }
 
 apply from: 'configs/test-setup.gradle'
+apply from: 'gradle/publish.gradle'

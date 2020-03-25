@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.integration
+package me.moallemi.gradle.advancedbuildversion.integration
 
 import com.android.build.gradle.AppPlugin
 import junit.framework.TestCase.assertEquals
+import me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin
+import me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 import org.eclipse.jgit.api.Git
 import org.gradle.api.Project
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
@@ -27,12 +33,6 @@ import org.hamcrest.Matchers.lessThan
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin
-import org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 
 class VersionCodeConfigTest {
 
