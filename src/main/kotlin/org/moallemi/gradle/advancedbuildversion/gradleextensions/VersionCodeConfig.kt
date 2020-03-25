@@ -24,6 +24,8 @@ class VersionCodeConfig(
 
     private var dependsOnTasks: List<String> = listOf("release")
 
+    private var lastLegacyCode = 0
+
     private val versionPropsFile = File("${project.buildFile.parent}/version.properties")
 
     fun dependsOnTasks(vararg paths: String) {
@@ -34,8 +36,12 @@ class VersionCodeConfig(
         versionCodeType = type
     }
 
+    fun lastLegacyCode(lastCode: Int) {
+        lastLegacyCode = lastCode
+    }
+
     val versionCode: Int
-        get() = when (versionCodeType) {
+        get() = lastLegacyCode + when (versionCodeType) {
             DATE -> byDate()
             AUTO_INCREMENT_ONE_STEP -> byAutoIncrementOneStep()
             AUTO_INCREMENT_DATE -> byDateAutoIncrement()
