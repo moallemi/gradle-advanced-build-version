@@ -4,12 +4,13 @@ import com.android.build.gradle.api.ApplicationVariant
 import groovy.lang.Closure
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
+import org.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 
 open class AdvancedBuildVersionConfig(private val project: Project) {
 
     internal var versionNameConfig = VersionNameConfig()
 
-    internal var versionCodeConfig = VersionCodeConfig(project)
+    internal var versionCodeConfig = VersionCodeConfig(project, GitWrapper(project))
 
     internal var outputConfig = FileOutputConfig(project)
 
