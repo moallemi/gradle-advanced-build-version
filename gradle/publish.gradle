@@ -1,6 +1,6 @@
 project.description = "Generate Android version code and version name automatically from git tags, date,... ."
 project.group = "me.moallemi.gradle"
-project.version = "1.7.0-SNAPSHOT"
+project.version = "1.7.1-SNAPSHOT"
 project.ext {
     artifactId = 'advanced-build-version'
     name = 'Gradle Advanced Build Version Plugin'

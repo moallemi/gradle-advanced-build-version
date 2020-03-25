@@ -10,8 +10,8 @@ plugins {
     id "signing"
 }
 
-apply from: 'configs/spotless.gradle'
-apply from: 'configs/jacoco.gradle'
+apply from: 'gradle/spotless.gradle'
+apply from: 'gradle/jacoco.gradle'
 
 repositories {
     google()
@@ -45,5 +45,5 @@ gradlePlugin {
     }
 }
 
-apply from: 'configs/test-setup.gradle'
+apply from: 'gradle/test-setup.gradle'
 apply from: 'gradle/publish.gradle'
