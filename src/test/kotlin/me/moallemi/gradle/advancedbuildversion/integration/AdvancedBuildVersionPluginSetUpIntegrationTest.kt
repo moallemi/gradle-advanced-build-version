@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.integration
+package me.moallemi.gradle.advancedbuildversion.integration
 
 import java.io.File
 import java.util.concurrent.TimeUnit
+import me.moallemi.gradle.advancedbuildversion.utils.GRADLE_MIN_VERSION
+import me.moallemi.gradle.advancedbuildversion.utils.ProjectProps
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.MatcherAssert.assertThat
@@ -26,8 +28,6 @@ import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.moallemi.gradle.advancedbuildversion.utils.GRADLE_MIN_VERSION
-import org.moallemi.gradle.advancedbuildversion.utils.ProjectProps
 
 class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
@@ -36,6 +36,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
     @Test
     fun `low Gradle Version fails build`() {
+        publishToLocalMaven()
+
         writeBuildGradle(
             """plugins {
                id "$PLUGIN_ID" version "$PLUGIN_VERSION"
@@ -292,8 +294,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     }
 
     companion object {
-        private const val PLUGIN_ID = "org.moallemi.advanced-build-version"
-        private const val CLASSPATH = "org.moallemi.gradle.advanced-build-version:gradle-plugin"
+        private const val PLUGIN_ID = "me.moallemi.advanced-build-version"
+        private const val CLASSPATH = "me.moallemi.gradle:advanced-build-version"
         private val PLUGIN_VERSION by lazy {
             ProjectProps.load().advancedBuildPluginVersion
         }

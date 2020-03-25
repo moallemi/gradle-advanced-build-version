@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.gradleextensions
+package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import java.io.File
 import java.io.FileInputStream
@@ -23,13 +23,13 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.Properties
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
+import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
-import org.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 
 class VersionCodeConfig(
     private val project: Project,

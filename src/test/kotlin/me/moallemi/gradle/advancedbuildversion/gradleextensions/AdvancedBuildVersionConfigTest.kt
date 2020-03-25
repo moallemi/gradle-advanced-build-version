@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion.gradleextensions
+package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import groovy.lang.Closure
 import groovy.lang.GroovyShell

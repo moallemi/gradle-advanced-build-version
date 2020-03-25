@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion
+package me.moallemi.gradle.advancedbuildversion
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryPlugin
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
+import me.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
+import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.internal.impldep.org.eclipse.jgit.errors.NotSupportedException
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
-import org.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
-import org.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 
 class AdvancedBuildVersionPlugin : Plugin<Project> {
 

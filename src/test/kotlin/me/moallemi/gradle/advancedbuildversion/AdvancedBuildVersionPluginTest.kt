@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.moallemi.gradle.advancedbuildversion
+package me.moallemi.gradle.advancedbuildversion
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
@@ -28,6 +28,10 @@ import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verifyOrder
+import me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
+import me.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
+import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,10 +41,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
-import org.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
-import org.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
-import org.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
-import org.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 
 class AdvancedBuildVersionPluginTest {
 
@@ -50,7 +50,7 @@ class AdvancedBuildVersionPluginTest {
 
     @Before
     fun setUp() {
-        mockkStatic("org.moallemi.gradle.advancedbuildversion.utils.CompatibilityManagerKt")
+        mockkStatic("me.moallemi.gradle.advancedbuildversion.utils.CompatibilityManagerKt")
         every { checkAndroidGradleVersion(any()) } just runs
 
         every { project.extensions } returns mockk()
