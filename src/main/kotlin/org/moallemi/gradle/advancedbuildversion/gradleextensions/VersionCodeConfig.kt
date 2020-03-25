@@ -12,8 +12,13 @@ import org.gradle.api.Project
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
+import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
+import org.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 
-class VersionCodeConfig(private val project: Project) {
+class VersionCodeConfig(
+    private val project: Project,
+    private val gitWrapper: GitWrapper
+) {
 
     private var versionCodeType = AUTO_INCREMENT_ONE_STEP
 
@@ -34,6 +39,7 @@ class VersionCodeConfig(private val project: Project) {
             DATE -> byDate()
             AUTO_INCREMENT_ONE_STEP -> byAutoIncrementOneStep()
             AUTO_INCREMENT_DATE -> byDateAutoIncrement()
+            GIT_COMMIT_COUNT -> byGitCommitCount()
         }
 
     internal fun increaseVersionCodeIfPossible() =
@@ -76,6 +82,8 @@ class VersionCodeConfig(private val project: Project) {
         return formatter.format(Date()).toInt() - 1400000000
     }
 
+    private fun byGitCommitCount() = gitWrapper.getCommitsNumberInBranch()
+
     companion object {
         private const val KEY_VERSION_CODE = "AI_VERSION_CODE"
     }
@@ -84,5 +92,6 @@ class VersionCodeConfig(private val project: Project) {
 enum class VersionCodeType {
     DATE,
     AUTO_INCREMENT_ONE_STEP,
-    AUTO_INCREMENT_DATE
+    AUTO_INCREMENT_DATE,
+    GIT_COMMIT_COUNT
 }

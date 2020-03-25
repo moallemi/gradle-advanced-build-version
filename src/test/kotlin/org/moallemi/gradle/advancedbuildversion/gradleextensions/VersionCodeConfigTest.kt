@@ -14,10 +14,14 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+import org.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
+import org.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 
 class VersionCodeConfigTest {
 
     private val project: Project = mockk(relaxUnitFun = true)
+
+    private val gitWrapper: GitWrapper = mockk()
 
     private lateinit var versionFile: File
 
@@ -29,7 +33,7 @@ class VersionCodeConfigTest {
             createNewFile()
         }
         every { project.buildFile } returns versionFile
-        versionCodeConfig = VersionCodeConfig(project)
+        versionCodeConfig = VersionCodeConfig(project, gitWrapper)
     }
 
     @After
@@ -57,6 +61,16 @@ class VersionCodeConfigTest {
             exception.message, "Could not read version.properties file in path ${versionFile.absolutePath}." +
                 " Please create this file and add it to your VCS (git, svn, ...)."
         )
+    }
+
+    @Test
+    fun `versionCodeType is GIT_COMMIT_COUNT`() {
+        every { gitWrapper.getCommitsNumberInBranch() } returns 5
+
+        versionCodeConfig.versionCodeType(GIT_COMMIT_COUNT)
+        val actual = versionCodeConfig.versionCode
+
+        assertEquals(5, actual)
     }
 
     @Test

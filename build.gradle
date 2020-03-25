@@ -18,13 +18,12 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.70"
-
-    implementation 'com.android.tools.build:gradle:3.0.0'
+    implementation "com.android.tools.build:gradle:3.0.0"
+    implementation "org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r"
 
     testImplementation gradleTestKit()
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.hamcrest:hamcrest:2.2'
-
     testImplementation "io.mockk:mockk:1.9.3"
 }
 
