@@ -74,6 +74,17 @@ class VersionCodeConfigTest {
     }
 
     @Test
+    fun `versionCodeType is GIT_COMMIT_COUNT and lastLegacyCode = 987650`() {
+        every { gitWrapper.getCommitsNumberInBranch() } returns 5
+
+        versionCodeConfig.versionCodeType(GIT_COMMIT_COUNT)
+        versionCodeConfig.lastLegacyCode(987650)
+        val actual = versionCodeConfig.versionCode
+
+        assertEquals(987655, actual)
+    }
+
+    @Test
     fun `versionCodeType is AUTO_INCREMENT_ONE_STEP and versionCode is 4`() {
         versionFile.apply {
             val versionProps = Properties()
@@ -84,7 +95,22 @@ class VersionCodeConfigTest {
 
         versionCodeConfig.versionCodeType(AUTO_INCREMENT_ONE_STEP)
 
-        assertEquals(versionCodeConfig.versionCode, 4)
+        assertEquals(4, versionCodeConfig.versionCode)
+    }
+
+    @Test
+    fun `versionCodeType is AUTO_INCREMENT_ONE_STEP and versionCode is 4 and lastLegacyCode = 999880`() {
+        versionFile.apply {
+            val versionProps = Properties()
+            versionProps.load(FileInputStream(this))
+            versionProps["AI_VERSION_CODE"] = "3"
+            versionProps.store(this.writer(), null)
+        }
+
+        versionCodeConfig.versionCodeType(AUTO_INCREMENT_ONE_STEP)
+        versionCodeConfig.lastLegacyCode(999880)
+
+        assertEquals(999884, versionCodeConfig.versionCode)
     }
 
     @Test
