@@ -1,0 +1,55 @@
+
+publishing {
+    publications {
+        advancedBuildVersion(MavenPublication) {
+            groupId = project.group
+            artifactId = project.artifactId
+            version = project.version
+
+            from components.java
+            artifact tasks["sourcesJar"]
+            artifact tasks["javadocJar"]
+
+            pom {
+                name = project.name
+                packaging "jar"
+                description = project.description
+                url = project.url
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'moallemi'
+                        name = 'Reza Moallemi'
+                    }
+                }
+                scm {
+                    url = project.url
+                    connection = project.scm.connectionUrl
+                    developerConnection = project.scm.developerConnectionUrl
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username System.getenv('SONATYPE_USERNAME')
+                password System.getenv('SONATYPE_PASSWORD')
+            }
+        }
+    }
+}
+
+signing {
+    required !version.endsWith('SNAPSHOT')
+    useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASSWORD'))
+    sign(publishing.publications["advancedBuildVersion"])
+}

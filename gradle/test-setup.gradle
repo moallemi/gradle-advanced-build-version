@@ -26,6 +26,7 @@ task generateSdkResource() {
     inputs.property("buildToolsVersion", "29.0.2")
     inputs.property("minSdkVersion", 14)
     inputs.property("advancedBuildPluginVersion", project.version)
+    inputs.property("advancedBuildPluginId", project.pluginId)
     outputs.dir(generatedResources)
     doLast {
         // Properties.write will have a timestamp, that invalidates the task,
@@ -35,6 +36,7 @@ task generateSdkResource() {
             writer.write("buildToolsVersion=29.0.2\n")
             writer.write("minSdkVersion=14\n")
             writer.write("advancedBuildPluginVersion=${project.version}\n")
+            writer.write("advancedBuildPluginId=${project.pluginId}\n")
         }
     }
 }

@@ -22,7 +22,8 @@ data class ProjectProps(
     val compileSdkVersion: String,
     val buildToolsVersion: String,
     val minSdkVersion: String,
-    val advancedBuildPluginVersion: String
+    val advancedBuildPluginVersion: String,
+    val advancedBuildPluginId: String
 ) {
     companion object {
         fun load(): ProjectProps {
@@ -33,7 +34,8 @@ data class ProjectProps(
                 compileSdkVersion = properties.getProperty("compileSdkVersion"),
                 buildToolsVersion = properties.getProperty("buildToolsVersion"),
                 minSdkVersion = properties.getProperty("minSdkVersion"),
-                advancedBuildPluginVersion = properties.getProperty("advancedBuildPluginVersion")
+                advancedBuildPluginVersion = properties.getProperty("advancedBuildPluginVersion"),
+                advancedBuildPluginId = properties.getProperty("advancedBuildPluginId")
             )
         }
     }

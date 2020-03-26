@@ -278,7 +278,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     }
 
     private fun publishToLocalMaven() {
-        ProcessBuilder("./gradlew", "publishToMavenLocal")
+        ProcessBuilder("./gradlew", "publishAdvancedBuildVersionPublicationToMavenLocal")
             .start()
             .apply {
                 inputStream.reader(Charsets.UTF_8).use {
@@ -294,8 +294,10 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     }
 
     companion object {
-        private const val PLUGIN_ID = "me.moallemi.advanced-build-version"
         private const val CLASSPATH = "me.moallemi.gradle:advanced-build-version"
+        private val PLUGIN_ID by lazy {
+            ProjectProps.load().advancedBuildPluginId
+        }
         private val PLUGIN_VERSION by lazy {
             ProjectProps.load().advancedBuildPluginVersion
         }
