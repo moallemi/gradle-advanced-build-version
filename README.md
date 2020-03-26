@@ -2,10 +2,9 @@
 
 A plugin to generate the Android version code and version name automatically.
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/moallemi/gradle-advanced-build-version/CI) 
-![Maven Central](https://img.shields.io/maven-central/v/org.moallemi.gradle.advanced-build-version/gradle-plugin) 
-![Bintray](https://img.shields.io/bintray/v/bintray/jcenter/org.moallemi.gradle.advanced-build-version:gradle-plugin?label=jcenter) 
-![Codecov branch](https://img.shields.io/codecov/c/github/moallemi/gradle-advanced-build-version/dev?color)
+[![GitHub Workflow Status](https://github.com/moallemi/gradle-advanced-build-version/workflows/CI/badge.svg)](https://github.com/moallemi/gradle-advanced-build-version/actions?query=workflow%3ACI)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.moallemi.gradle/advanced-build-version/badge.svg)](https://search.maven.org/artifact/me.moallemi.gradle/advanced-build-version)
+[![Coverage](https://codecov.io/gh/moallemi/gradle-advanced-build-version/branch/dev/graph/badge.svg)](https://codecov.io/gh/moallemi/gradle-advanced-build-version)
 
 ## Contents
 1. [Installation](#installation)
@@ -26,11 +25,11 @@ buildscript {
   }
 
   dependencies {
-      classpath 'org.moallemi.gradle.advanced-build-version:gradle-plugin:1.6.0'
+      classpath 'me.moallemi.gradle:advanced-build-version:1.7.0'
   }
 }
 
-apply plugin: 'org.moallemi.advanced-build-version'
+apply plugin: 'me.moallemi.advanced-build-version'
 ```
 
 ## How to use
@@ -92,17 +91,17 @@ To customize version code in your `build.gradle` file write:
 ```groovy
 advancedVersioning {
     codeOptions {
-        versionCodeType org.moallemi.gradle.internal.VersionCodeType.DATE
+        versionCodeType 'GIT_COMMIT_COUNT'
     }
 }
 ```
 
 `versionCodeType` can be one of following params:
  
- * `org.moallemi.gradle.internal.VersionCodeType.DATE` formatted number e.g.: 1501101614
- * `org.moallemi.gradle.internal.VersionCodeType.JALALI_DATE` will output 931017
- * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_DATE` will output 101101614
- * `org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP` will output e.g: 24. this
+ * `GIT_COMMIT_COUNT` will output total commits number in current branch
+ * `DATE` formatted number e.g.: 1501101614
+ * `AUTO_INCREMENT_DATE` will output 101101614
+ * `AUTO_INCREMENT_ONE_STEP` will output e.g: 24. this
  property stores AI_VERSION_CODE in `version.properties` file in build.gradle directory, you may
  also change `dependsOnTasks` property to specify that on witch tasks should increase version code
  (default is every task that contains 'release' in its name)
@@ -110,7 +109,7 @@ advancedVersioning {
 ```groovy
 advancedVersioning {
   codeOptions {
-      versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+      versionCodeType 'AUTO_INCREMENT_ONE_STEP'
       dependsOnTasks 'release' // defaultValue
   }
 }
@@ -120,7 +119,7 @@ Setting multiple tasks for `dependsOnTasks` property:
 ```groovy
 advancedVersioning {
   codeOptions {
-      versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+      versionCodeType 'AUTO_INCREMENT_ONE_STEP'
       dependsOnTasks 'debug', 'release', 'assemble'
   }
 }
