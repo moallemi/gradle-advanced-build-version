@@ -42,7 +42,7 @@ fun checkMinimumGradleVersion() {
 }
 
 private fun checkAndroidVersion(version: String?) =
-    listOf("3.").any { version?.startsWith(it) ?: false }
+    listOf("3.", "4.").any { version?.startsWith(it) ?: false }
 
 private fun getAndroidPluginVersion(project: Project): Dependency? =
     findClassPathDependencyVersion(

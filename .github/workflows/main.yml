@@ -33,6 +33,12 @@ jobs:
       - name: Run spotless
         run: ./gradlew spotlessCheck
 
+      - name: Create local maven artifacts
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publishAdvancedBuildVersionPublicationToMavenLocal
+
       - name: Run tests with code coverage
         run: ./gradlew jacocoTestReport
 
