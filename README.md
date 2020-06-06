@@ -25,7 +25,7 @@ buildscript {
   }
 
   dependencies {
-      classpath 'me.moallemi.gradle:advanced-build-version:1.7.0'
+      classpath 'me.moallemi.gradle:advanced-build-version:1.7.1'
   }
 }
 
