@@ -16,6 +16,7 @@
 
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
+import com.android.build.gradle.AppExtension
 import groovy.lang.Closure
 import groovy.lang.GroovyShell
 import io.mockk.clearAllMocks
@@ -95,6 +96,14 @@ class AdvancedBuildVersionConfigTest {
     @Test
     fun `renameOutputApkIfPossible runs`() {
         config.renameOutputApkIfPossible(mockk())
+    }
+
+    @Test
+    fun `renameOutputApk runs`() {
+        every { project.extensions.findByType(AppExtension::class.java) } returns mockk {
+            every { applicationVariants } returns mockk()
+        }
+        config.renameOutputApk()
     }
 
     private fun givenProject() {

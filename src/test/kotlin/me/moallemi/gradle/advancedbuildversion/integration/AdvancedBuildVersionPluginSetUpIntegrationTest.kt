@@ -305,6 +305,73 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     }
 
     @Test
+    fun `outputOptions check versionName and renameOutput is correct for android gradle plugin 4_1_0`() {
+        publishToLocalMaven()
+
+        File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+
+        writeBuildGradle(
+            """
+                buildscript {
+                  repositories {
+                    google()
+                    jcenter()
+                    mavenLocal()
+                  }
+
+                  dependencies {
+                    classpath 'com.android.tools.build:gradle:4.1.0'
+                    classpath '$CLASSPATH:$PLUGIN_VERSION'
+                  }
+                }
+
+                repositories {
+                   google()
+                   jcenter()
+                }
+
+                apply plugin: 'com.android.application'
+                apply plugin: "$PLUGIN_ID"
+                
+                advancedVersioning {
+                    nameOptions {
+                      versionMajor 1
+                      versionMinor 3
+                      versionPatch 6
+                      versionBuild 8
+                    }
+                  outputOptions {
+                      renameOutput true
+                      nameFormat 'MyApp-${'$'}{versionName}'
+                  }
+                }
+
+                android {
+                  compileSdkVersion 29
+                  buildToolsVersion "29.0.2"
+                  defaultConfig {
+                    applicationId "com.example.myapplication"
+                    minSdkVersion 14
+                    targetSdkVersion 26
+                    versionCode 1
+                    versionName advancedVersioning.versionName
+                  }
+                }
+                advancedVersioning.renameOutputApk()
+                """.trimIndent()
+        )
+
+        val output = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion("6.5")
+            .withArguments("assemble")
+            .build()
+        assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
+        assertThat(output.output, containsString("outputFileName renamed to MyApp-1.3.6.8.apk"))
+    }
+
+    @Test
     fun `fails if applied on library plugin`() {
         publishToLocalMaven()
 
