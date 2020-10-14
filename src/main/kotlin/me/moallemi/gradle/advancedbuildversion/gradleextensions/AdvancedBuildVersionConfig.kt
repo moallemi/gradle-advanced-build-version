@@ -20,6 +20,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApplicationVariant
 import groovy.lang.Closure
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
+import me.moallemi.gradle.advancedbuildversion.utils.closureOf
 import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 
@@ -43,19 +44,31 @@ open class AdvancedBuildVersionConfig(private val project: Project) {
         project.configure(versionNameConfig, closure)
     }
 
+    fun nameOptions(config: VersionNameConfig.() -> Unit) {
+        project.configure(versionNameConfig, closureOf(config))
+    }
+
     fun codeOptions(closure: Closure<*>) {
         project.configure(versionCodeConfig, closure)
+    }
+
+    fun codeOptions(config: VersionCodeConfig.() -> Unit) {
+        project.configure(versionCodeConfig, closureOf(config))
     }
 
     fun outputOptions(closure: Closure<*>) {
         project.configure(outputConfig, closure)
     }
 
-    fun increaseVersionCodeIfPossible() {
+    fun outputOptions(config: FileOutputConfig.() -> Unit) {
+        project.configure(outputConfig, closureOf(config))
+    }
+
+    internal fun increaseVersionCodeIfPossible() {
         versionCodeConfig.increaseVersionCodeIfPossible()
     }
 
-    fun renameOutputApkIfPossible(variants: DomainObjectSet<ApplicationVariant>) {
+    internal fun renameOutputApkIfPossible(variants: DomainObjectSet<ApplicationVariant>) {
         outputConfig.renameOutputApkIfPossible(variants)
     }
 

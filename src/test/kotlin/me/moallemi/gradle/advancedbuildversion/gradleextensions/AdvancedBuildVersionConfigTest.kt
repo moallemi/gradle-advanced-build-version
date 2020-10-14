@@ -65,6 +65,17 @@ class AdvancedBuildVersionConfigTest {
     }
 
     @Test
+    fun `setUp nameOptions kts`() {
+        givenProject()
+
+        config.nameOptions(config = mockk())
+
+        verify {
+            project.configure(any<Any>(), any())
+        }
+    }
+
+    @Test
     fun `setUp codeOptions`() {
         givenProject()
 
@@ -76,10 +87,32 @@ class AdvancedBuildVersionConfigTest {
     }
 
     @Test
+    fun `setUp codeOptions kts`() {
+        givenProject()
+
+        config.codeOptions(config = mockk())
+
+        verify {
+            project.configure(any<Any>(), any())
+        }
+    }
+
+    @Test
     fun `setUp outOptions`() {
         givenProject()
 
         config.outputOptions(buildClosure())
+
+        verify {
+            project.configure(any<Any>(), any())
+        }
+    }
+
+    @Test
+    fun `setUp outOptions kts`() {
+        givenProject()
+
+        config.outputOptions(config = mockk())
 
         verify {
             project.configure(any<Any>(), any())
