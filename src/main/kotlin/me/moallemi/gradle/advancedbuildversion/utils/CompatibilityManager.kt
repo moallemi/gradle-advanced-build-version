@@ -22,7 +22,7 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.util.GradleVersion
 
 fun checkAndroidGradleVersion(project: Project) {
-    val androidGradlePlugin = getAndroidPluginVersion(project)
+    val androidGradlePlugin = getAndroidPlugin(project)
     if (androidGradlePlugin == null) {
         throw IllegalStateException(
             "The Android Gradle plugin not found. " +
@@ -44,7 +44,7 @@ fun checkMinimumGradleVersion() {
 private fun checkAndroidVersion(version: String?) =
     listOf("3.", "4.").any { version?.startsWith(it) ?: false }
 
-private fun getAndroidPluginVersion(project: Project): Dependency? =
+fun getAndroidPlugin(project: Project): Dependency? =
     findClassPathDependencyVersion(
         project,
         ANDROID_GRADLE_PLUGIN_GROUP,

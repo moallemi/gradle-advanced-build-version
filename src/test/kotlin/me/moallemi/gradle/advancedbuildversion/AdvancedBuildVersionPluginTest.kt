@@ -30,6 +30,8 @@ import io.mockk.slot
 import io.mockk.verifyOrder
 import me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
+import me.moallemi.gradle.advancedbuildversion.utils.ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
+import me.moallemi.gradle.advancedbuildversion.utils.ANDROID_GRADLE_PLUGIN_GROUP
 import me.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
 import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 import org.gradle.api.Action
@@ -96,6 +98,8 @@ class AdvancedBuildVersionPluginTest {
             every { applicationVariants } returns mockk()
         }
 
+        mockGetAndroidPlugin()
+
         plugin.apply(project)
 
         verifyOrder {
@@ -142,5 +146,33 @@ class AdvancedBuildVersionPluginTest {
             checkMinimumGradleVersion()
             checkAndroidGradleVersion(project)
         }
+    }
+
+    private fun mockGetAndroidPlugin() {
+        every { project.rootProject } returns mockk {
+            every { buildscript } returns mockk {
+                every { configurations } returns mockk {
+                    every {
+                        getByName("classpath").dependencies
+                    } returns mockk {
+                        every { iterator() } returns mockk()
+                        every { iterator().hasNext() } returns true
+                        every { iterator().next() } returns mockk {
+                            every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
+                            every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
+                            every { version } returns "3.0.1"
+                        }
+                    }
+                }
+            }
+        }
+        every {
+            project.buildscript.configurations.getByName("classpath").dependencies
+        } returns mockk {
+            every { iterator() } returns mockk()
+            every { iterator().hasNext() } returns false
+        }
+
+        every { project.plugins.hasPlugin(any<String>()) } returns true
     }
 }

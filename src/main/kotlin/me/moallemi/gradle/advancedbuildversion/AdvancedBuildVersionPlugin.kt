@@ -23,6 +23,7 @@ import com.android.build.gradle.LibraryPlugin
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import me.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
 import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
+import me.moallemi.gradle.advancedbuildversion.utils.getAndroidPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.internal.impldep.org.eclipse.jgit.errors.NotSupportedException
@@ -53,8 +54,10 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
     private fun configureAndroid(project: Project, config: AdvancedBuildVersionConfig) {
         config.increaseVersionCodeIfPossible()
 
-        val appExtension = project.extensions.getByType(AppExtension::class.java)
-        config.renameOutputApkIfPossible(appExtension.applicationVariants)
+        if (getAndroidPlugin(project)?.version?.compareTo("4.1.0") == -1) { // versions prior to 4.1.0
+            val appExtension = project.extensions.getByType(AppExtension::class.java)
+            config.renameOutputApkIfPossible(appExtension.applicationVariants)
+        }
     }
 
     companion object {

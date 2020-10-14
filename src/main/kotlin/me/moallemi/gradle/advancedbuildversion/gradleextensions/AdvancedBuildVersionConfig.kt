@@ -16,6 +16,7 @@
 
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApplicationVariant
 import groovy.lang.Closure
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
@@ -56,5 +57,11 @@ open class AdvancedBuildVersionConfig(private val project: Project) {
 
     fun renameOutputApkIfPossible(variants: DomainObjectSet<ApplicationVariant>) {
         outputConfig.renameOutputApkIfPossible(variants)
+    }
+
+    fun renameOutputApk() {
+        project.extensions.findByType(AppExtension::class.java)?.run {
+            outputConfig.renameOutputApkIfPossible(applicationVariants)
+        }
     }
 }
