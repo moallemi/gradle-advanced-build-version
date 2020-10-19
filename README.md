@@ -21,11 +21,11 @@ Add the advanced-build-version plugin to your build script and use the property 
 ```groovy
 buildscript {
   repositories {
-      jcenter()
+    jcenter()
   }
 
   dependencies {
-      classpath 'me.moallemi.gradle:advanced-build-version:1.7.1'
+    classpath 'me.moallemi.gradle:advanced-build-version:1.7.2'
   }
 }
 
@@ -36,9 +36,9 @@ apply plugin: 'me.moallemi.advanced-build-version'
 
 ```
 advancedVersioning {
-    nameOptions { }
-    codeOptions { }
-    outputOptions { }
+  nameOptions { }
+  codeOptions { }
+  outputOptions { }
 }
 
 def appVersionName = advancedVersioning.versionName
@@ -47,38 +47,38 @@ def appVersionCode = advancedVersioning.versionCode
 
 ## Version Name Configuration
 
-You can customize version name in your `build.gradle` file as follow:
+You can customize version name in your `build.gradle` file as follows:
 
 ```groovy
 advancedVersioning {
-    nameOptions {
-        versionMajor 1
-        versionMinor 3
-        versionPatch 6
-        versionBuild 8
-    }
+  nameOptions {
+    versionMajor 1
+    versionMinor 3
+    versionPatch 6
+    versionBuild 8
+  }
 }
 ```
 the above configuration will output `1.3.6.8`
 
-there is no need to specify all params because they will be handled automatically. for example
+there is no need to specify all params because they will be handled automatically. for example:
 
 ```groovy
 advancedVersioning {
-    nameOptions {
-        versionMajor 1
-        versionBuild 8
-    }
+  nameOptions {
+    versionMajor 1
+    versionBuild 8
+  }
 }
 ```
 will output `1.0.0.8` and
 
 ```groovy
 advancedVersioning {
-    nameOptions {
-        versionMajor 1
-        versionMinor 3
-    }
+  nameOptions {
+    versionMajor 1
+    versionMinor 3
+  }
 }
 ```
 
@@ -88,11 +88,23 @@ will output `1.3`
 
 To customize version code in your `build.gradle` file write:
 
+Groovy:
 ```groovy
 advancedVersioning {
-    codeOptions {
-        versionCodeType 'GIT_COMMIT_COUNT'
-    }
+  codeOptions {
+    versionCodeType 'GIT_COMMIT_COUNT'
+  }
+}
+```
+
+Kotlin:
+```kotlin
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.*
+
+advancedVersioning {
+  codeOptions {
+    versionCodeType(GIT_COMMIT_COUNT)
+  }
 }
 ```
 
@@ -109,8 +121,8 @@ advancedVersioning {
 ```groovy
 advancedVersioning {
   codeOptions {
-      versionCodeType 'AUTO_INCREMENT_ONE_STEP'
-      dependsOnTasks 'release' // defaultValue
+    versionCodeType 'AUTO_INCREMENT_ONE_STEP'
+    dependsOnTasks 'release' // defaultValue
   }
 }
 ```
@@ -119,8 +131,8 @@ Setting multiple tasks for `dependsOnTasks` property:
 ```groovy
 advancedVersioning {
   codeOptions {
-      versionCodeType 'AUTO_INCREMENT_ONE_STEP'
-      dependsOnTasks 'debug', 'release', 'assemble'
+    versionCodeType 'AUTO_INCREMENT_ONE_STEP'
+    dependsOnTasks 'debug', 'release', 'assemble'
   }
 }
 ```
@@ -132,13 +144,28 @@ the `renameOutput` option:
 ```groovy
 advancedVersioning {
   outputOptions {
-      renameOutput true
+    renameOutput true
   }
 }
 ```
 
-If your app name is MyApp with 2.7 version name and you are in debug mode, the output apk file name 
+If your app name is MyApp with 2.7 version name, and you are in debug mode, the output apk file name 
 will be: `MyApp-2.7-debug.apk`
+
+**NOTE:** Android Gradle Plugin 4.1.0 [drops support](https://developer.android.com/studio/known-issues#variant_output) for renaming apk. We are using a workaround to keep renaming option for gradle-advanced-build-version library.
+So if you are using AGP 4.1.0+, you have to add `advancedVersioning.renameOutputApk()` after android configuration. The order is important:
+
+```groovy
+advancedVersioning {
+  outputOptions {
+    renameOutput true
+  }
+}
+android {
+  ...
+}
+advancedVersioning.renameOutputApk()
+```
 
 You can customize the output name by using this params:
 
@@ -149,22 +176,44 @@ You can customize the output name by using this params:
 * `${versionName}`: version name
 * `${versionCode}`: version code
 
+Groovy:
 ```groovy
 advancedVersioning {
   outputOptions {
-      renameOutput true
-      nameFormat '${appName}-${buildType}-${versionName}'
+    renameOutput true
+    nameFormat '${appName}-${buildType}-${versionName}'
+  }
+}
+```
+
+Kotlin:
+```kotlin
+advancedVersioning {
+  outputOptions {
+    renameOutput(true)
+    nameFormat("\${appName}-\${buildType}-\${versionName}-\${versionCode}")
   }
 }
 ```
 
 And you can also use custom string in `nameFormat` like:
 
+Groovy:
 ```groovy
 advancedVersioning {
   outputOptions {
-      renameOutput true
-      nameFormat '${appName}-google-play-${versionName}'
+    renameOutput true
+    nameFormat '${appName}-google-play-${versionName}'
+  }
+}
+```
+
+Kotlin:
+```kotlin
+advancedVersioning {
+  outputOptions {
+    renameOutput(true)
+    nameFormat("\${appName}-google-play-\${versionName}")
   }
 }
 ```
