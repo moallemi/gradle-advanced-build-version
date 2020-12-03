@@ -25,6 +25,7 @@ import java.util.Locale
 import java.util.Properties
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_STEP
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
@@ -37,6 +38,8 @@ class VersionCodeConfig(
 ) {
 
     private var versionCodeType = AUTO_INCREMENT_ONE_STEP
+
+    private var versionCodeStep = 1
 
     private var dependsOnTasks: List<String> = listOf("release")
 
@@ -52,6 +55,10 @@ class VersionCodeConfig(
         versionCodeType = type
     }
 
+    fun versionCodeStep(step: Int) {
+        versionCodeStep = step
+    }
+
     fun lastLegacyCode(lastCode: Int) {
         lastLegacyCode = lastCode
     }
@@ -59,7 +66,8 @@ class VersionCodeConfig(
     val versionCode: Int
         get() = lastLegacyCode + when (versionCodeType) {
             DATE -> byDate()
-            AUTO_INCREMENT_ONE_STEP -> byAutoIncrementOneStep()
+            AUTO_INCREMENT_ONE_STEP -> byAutoIncrement(1)
+            AUTO_INCREMENT_STEP -> byAutoIncrement(versionCodeStep)
             AUTO_INCREMENT_DATE -> byDateAutoIncrement()
             GIT_COMMIT_COUNT -> byGitCommitCount()
         }
@@ -68,7 +76,8 @@ class VersionCodeConfig(
         dependsOnTasks.forEach { dependentTask ->
             project.gradle.startParameter.taskNames.forEach { taskName ->
                 if (taskName.contains(dependentTask, true) &&
-                    versionCodeType == AUTO_INCREMENT_ONE_STEP && versionPropsFile.canRead()
+                    (versionCodeType == AUTO_INCREMENT_ONE_STEP || versionCodeType == AUTO_INCREMENT_STEP) &&
+                    versionPropsFile.canRead()
                 ) {
                     val versionProps = Properties()
                     versionProps.load(FileInputStream(versionPropsFile))
@@ -88,10 +97,10 @@ class VersionCodeConfig(
         return year + month + day + hour + minutes
     }
 
-    private fun byAutoIncrementOneStep() = if (versionPropsFile.canRead()) {
+    private fun byAutoIncrement(step: Int) = if (versionPropsFile.canRead()) {
         val versionProps = Properties()
         versionProps.load(FileInputStream(versionPropsFile))
-        versionProps[KEY_VERSION_CODE]?.toString()?.toInt()?.plus(1) ?: 1
+        versionProps[KEY_VERSION_CODE]?.toString()?.toInt()?.plus(step) ?: 1
     } else {
         throw GradleException(
             "Could not read version.properties file in path ${versionPropsFile.absolutePath}." +
@@ -114,6 +123,7 @@ class VersionCodeConfig(
 enum class VersionCodeType {
     DATE,
     AUTO_INCREMENT_ONE_STEP,
+    AUTO_INCREMENT_STEP,
     AUTO_INCREMENT_DATE,
     GIT_COMMIT_COUNT
 }

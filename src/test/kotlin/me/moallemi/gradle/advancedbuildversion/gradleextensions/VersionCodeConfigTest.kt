@@ -24,6 +24,7 @@ import java.io.FileInputStream
 import java.util.Properties
 import junit.framework.TestCase.assertEquals
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_STEP
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.GradleException
@@ -177,6 +178,21 @@ class VersionCodeConfigTest {
         versionCodeConfig.increaseVersionCodeIfPossible()
 
         assertEquals(versionCodeConfig.versionCode, currentVersionCode)
+    }
+
+    @Test
+    fun `versionCodeType is AUTO_INCREMENT_STEP and versionCodeStep is 4`() {
+        versionFile.apply {
+            val versionProps = Properties()
+            versionProps.load(FileInputStream(this))
+            versionProps["AI_VERSION_CODE"] = "2"
+            versionProps.store(this.writer(), null)
+        }
+
+        versionCodeConfig.versionCodeType(AUTO_INCREMENT_STEP)
+        versionCodeConfig.versionCodeStep(4)
+
+        assertEquals(6, versionCodeConfig.versionCode)
     }
 
     companion object {
