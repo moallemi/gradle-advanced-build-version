@@ -113,9 +113,11 @@ advancedVersioning {
  * `GIT_COMMIT_COUNT` will output total commits number in current branch
  * `DATE` formatted number e.g.: 1501101614
  * `AUTO_INCREMENT_DATE` will output 101101614
- * `AUTO_INCREMENT_ONE_STEP` will output e.g: 24. this
- property stores AI_VERSION_CODE in `version.properties` file in build.gradle directory, you may
- also change `dependsOnTasks` property to specify that on witch tasks should increase version code
+ * `AUTO_INCREMENT_ONE_STEP` will output e.g: 24
+ * `AUTO_INCREMENT_STEP` will output e.g: 26
+ 
+ `AUTO_INCREMENT_ONE_STEP` and `AUTO_INCREMENT_STEP` store AI_VERSION_CODE in `version.properties` file in build.gradle 
+ directory, you may also change `dependsOnTasks` property to specify that on witch tasks should increase version code
  (default is every task that contains 'release' in its name)
 
 ```groovy
@@ -136,6 +138,16 @@ advancedVersioning {
   }
 }
 ```
+
+`AUTO_INCREMENT_STEP` allows you to set a step different from 1:
+```groovy
+advancedVersioning {
+  codeOptions {
+    versionCodeType 'AUTO_INCREMENT_STEP'
+    versionCodeStep 2
+  }
+}
+``` 
 
 ## File output options
 You can also rename the output generated apk file with this plugin. it can be done just by enabling 
