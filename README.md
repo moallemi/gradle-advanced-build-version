@@ -25,7 +25,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'me.moallemi.gradle:advanced-build-version:1.7.2'
+    classpath 'me.moallemi.gradle:advanced-build-version:1.7.3'
   }
 }
 
@@ -113,7 +113,7 @@ advancedVersioning {
  * `GIT_COMMIT_COUNT` will output total commits number in current branch
  * `DATE` formatted number e.g.: 1501101614
  * `AUTO_INCREMENT_DATE` will output 101101614
- * `AUTO_INCREMENT_ONE_STEP` will output e.g: 24
+ * <del>`AUTO_INCREMENT_ONE_STEP`</del> will output e.g: 24
  * `AUTO_INCREMENT_STEP` will output e.g: 26
  
  `AUTO_INCREMENT_ONE_STEP` and `AUTO_INCREMENT_STEP` store AI_VERSION_CODE in `version.properties` file in build.gradle 
