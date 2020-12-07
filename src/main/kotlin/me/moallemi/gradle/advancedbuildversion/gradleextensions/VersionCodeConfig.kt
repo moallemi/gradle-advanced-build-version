@@ -122,6 +122,10 @@ class VersionCodeConfig(
 
 enum class VersionCodeType {
     DATE,
+    @Deprecated(
+        "AUTO_INCREMENT_ONE_STEP is Deprecated and will be removed in next versions.",
+        ReplaceWith("AUTO_INCREMENT_STEP", "me.moallemi.gradle.advancedbuildversion.gradleextensions")
+    )
     AUTO_INCREMENT_ONE_STEP,
     AUTO_INCREMENT_STEP,
     AUTO_INCREMENT_DATE,
