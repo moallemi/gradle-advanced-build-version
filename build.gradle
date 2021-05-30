@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
     id "com.gradle.plugin-publish" version "0.10.1"
     id 'java-gradle-plugin'
 
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.10"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
     implementation "com.android.tools.build:gradle:3.0.0"
     implementation "org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r"
 
