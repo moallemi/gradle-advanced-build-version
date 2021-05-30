@@ -19,14 +19,12 @@ package me.moallemi.gradle.advancedbuildversion.gradleextensions
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.Properties
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_STEP
-import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.GradleException
@@ -65,7 +63,6 @@ class VersionCodeConfig(
 
     val versionCode: Int
         get() = lastLegacyCode + when (versionCodeType) {
-            DATE -> byDate()
             AUTO_INCREMENT_ONE_STEP -> byAutoIncrement(1)
             AUTO_INCREMENT_STEP -> byAutoIncrement(versionCodeStep)
             AUTO_INCREMENT_DATE -> byDateAutoIncrement()
@@ -86,16 +83,6 @@ class VersionCodeConfig(
                 }
             }
         }
-
-    private fun byDate(): Int {
-        val calendar: Calendar = Calendar.getInstance(Locale.ENGLISH)
-        val year: Int = (calendar.get(Calendar.YEAR) - 2000) * 100000000
-        val month: Int = (calendar.get(Calendar.MONTH) + 1) * 1000000
-        val day: Int = calendar.get(Calendar.DAY_OF_MONTH) * 10000
-        val hour: Int = calendar.get(Calendar.HOUR_OF_DAY) * 100
-        val minutes: Int = calendar.get(Calendar.MINUTE)
-        return year + month + day + hour + minutes
-    }
 
     private fun byAutoIncrement(step: Int) = if (versionPropsFile.canRead()) {
         val versionProps = Properties()
@@ -121,7 +108,6 @@ class VersionCodeConfig(
 }
 
 enum class VersionCodeType {
-    DATE,
     @Deprecated(
         "AUTO_INCREMENT_ONE_STEP is Deprecated and will be removed in next versions.",
         ReplaceWith("AUTO_INCREMENT_STEP", "me.moallemi.gradle.advancedbuildversion.gradleextensions")
