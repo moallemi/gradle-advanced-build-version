@@ -21,6 +21,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import org.gradle.api.GradleException
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
 import org.junit.After
@@ -137,7 +138,7 @@ class CompatibilityManagerKtTest {
                         every { iterator().next() } returns mockk {
                             every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                             every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                            every { version } returns "3.0.1"
+                            every { version } returns MIN_AGP_SUPPORTED_VERSION
                         }
                     }
                 }
@@ -173,7 +174,7 @@ class CompatibilityManagerKtTest {
                         every { iterator().next() } returns mockk {
                             every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                             every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                            every { version } returns "3.0.1"
+                            every { version } returns MIN_AGP_SUPPORTED_VERSION
                         }
                     }
                 }
@@ -245,7 +246,7 @@ class CompatibilityManagerKtTest {
             every { iterator().next() } returns mockk {
                 every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                 every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                every { version } returns "3.1.0"
+                every { version } returns MIN_AGP_SUPPORTED_VERSION
             }
         }
 
@@ -269,7 +270,7 @@ class CompatibilityManagerKtTest {
             every { iterator().next() } returns mockk {
                 every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                 every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                every { version } returns "3.1.0"
+                every { version } returns MIN_AGP_SUPPORTED_VERSION
             }
         }
 
@@ -282,7 +283,7 @@ class CompatibilityManagerKtTest {
     fun `minimum Gradle Version is supported`() {
         mockkStatic(GradleVersion::class)
 
-        every { GradleVersion.current() } returns GradleVersion.version("5.3.1")
+        every { GradleVersion.current() } returns GradleVersion.version("7.0.0")
 
         checkMinimumGradleVersion()
     }
@@ -301,5 +302,33 @@ class CompatibilityManagerKtTest {
             "\"gradle-advanced-build-version\" plugin requires at least minimum version $GRADLE_MIN_VERSION. " +
                 "Detected version ${GradleVersion.version("4.7.8")}."
         )
+    }
+
+    @Test
+    fun `minimum Java Version is supported`() {
+        mockkStatic(JavaVersion::class)
+
+        every { JavaVersion.current() } returns JavaVersion.VERSION_11
+
+        checkJavaRuntimeVersion()
+    }
+
+    @Test
+    fun `minimum Java Version is not supported`() {
+        mockkStatic(JavaVersion::class)
+
+        every { JavaVersion.current() } returns JavaVersion.VERSION_1_8
+
+        val exception = assertThrows(GradleException::class.java) {
+            checkJavaRuntimeVersion()
+        }
+        assertEquals(
+            exception.message,
+            "\"gradle-advanced-build-version\" plugin requires this build to run with Java 11"
+        )
+    }
+
+    companion object {
+        private const val MIN_AGP_SUPPORTED_VERSION = "7.0.0-beta03"
     }
 }

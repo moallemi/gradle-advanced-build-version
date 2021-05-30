@@ -17,6 +17,7 @@
 package me.moallemi.gradle.advancedbuildversion.utils
 
 import org.gradle.api.GradleException
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.util.GradleVersion
@@ -41,8 +42,14 @@ fun checkMinimumGradleVersion() {
     }
 }
 
+fun checkJavaRuntimeVersion() {
+    if (JavaVersion.current() != JavaVersion.VERSION_11) {
+        throw GradleException("\"gradle-advanced-build-version\" plugin requires this build to run with Java 11")
+    }
+}
+
 private fun checkAndroidVersion(version: String?) =
-    listOf("3.", "4.").any { version?.startsWith(it) ?: false }
+    listOf("7.").any { version?.startsWith(it) ?: false }
 
 fun getAndroidPlugin(project: Project): Dependency? =
     findClassPathDependencyVersion(
@@ -60,6 +67,6 @@ private fun findClassPathDependencyVersion(project: Project, group: String, attr
         group == it.group && it.name == attributeId
     }
 
-internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("5.0")
+internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("7.0.0")
 internal const val ANDROID_GRADLE_PLUGIN_GROUP = "com.android.tools.build"
 internal const val ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID = "gradle"

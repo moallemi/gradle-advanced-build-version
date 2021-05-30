@@ -22,6 +22,7 @@ import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryPlugin
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import me.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
+import me.moallemi.gradle.advancedbuildversion.utils.checkJavaRuntimeVersion
 import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 import me.moallemi.gradle.advancedbuildversion.utils.getAndroidPlugin
 import org.gradle.api.Plugin
@@ -31,6 +32,7 @@ import org.gradle.internal.impldep.org.eclipse.jgit.errors.NotSupportedException
 class AdvancedBuildVersionPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+        checkJavaRuntimeVersion()
         checkMinimumGradleVersion()
         checkAndroidGradleVersion(project)
 

@@ -48,12 +48,12 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             GradleRunner.create()
                 .withProjectDir(testProjectRoot.root)
                 .withPluginClasspath()
-                .withGradleVersion("4.8")
+                .withGradleVersion("6.8.2")
                 .build()
         }
         assertThat(
             exception.message,
-            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 4.8.")
+            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 6.8.2")
         )
     }
 
@@ -82,7 +82,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             GradleRunner.create()
                 .withProjectDir(testProjectRoot.root)
                 .withPluginClasspath()
-                .withGradleVersion("5.0")
+                .withGradleVersion(CURRENT_GRADLE_VERSION)
                 .build()
         }
         assertThat(
@@ -105,7 +105,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   }
                 
                   dependencies {
-                    classpath 'com.android.tools.build:gradle:3.1.0'
+                    classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
                 }
@@ -117,7 +117,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             GradleRunner.create()
                 .withProjectDir(testProjectRoot.root)
                 .withPluginClasspath()
-                .withGradleVersion("5.0")
+                .withGradleVersion(CURRENT_GRADLE_VERSION)
                 .build()
         }
         assertThat(
@@ -142,7 +142,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   }
                 
                   dependencies {
-                    classpath 'com.android.tools.build:gradle:3.1.0'
+                    classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
                 }
@@ -167,13 +167,13 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         val output = GradleRunner.create()
             .withProjectDir(testProjectRoot.root)
             .withPluginClasspath()
-            .withGradleVersion("5.0")
+            .withGradleVersion(CURRENT_GRADLE_VERSION)
             .build()
         assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
     }
 
     @Test
-    fun `outputOptions versionName and renameOutput is true for android gradle plugin 3_1_0`() {
+    fun `build fails with unsupported android gradle plugin 3_1_0`() {
         publishToLocalMaven()
 
         File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
@@ -228,84 +228,21 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 """.trimIndent()
         )
 
-        val output = GradleRunner.create()
-            .withProjectDir(testProjectRoot.root)
-            .withPluginClasspath()
-            .withGradleVersion("5.0")
-            .withArguments("assemble")
-            .build()
-        assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
-        assertThat(output.output, containsString("outputFileName renamed to MyApp-1.3.6.8.apk"))
-    }
-
-    @Test
-    fun `outputOptions check versionName and renameOutput is correct for android gradle plugin 4_0_0`() {
-        publishToLocalMaven()
-
-        File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
-
-        writeBuildGradle(
-            """
-                buildscript {
-                  repositories {
-                    google()
-                    jcenter()
-                    mavenLocal()
-                  }
-
-                  dependencies {
-                    classpath 'com.android.tools.build:gradle:4.0.0'
-                    classpath '$CLASSPATH:$PLUGIN_VERSION'
-                  }
-                }
-
-                repositories {
-                   google()
-                   jcenter()
-                }
-
-                apply plugin: 'com.android.application'
-                apply plugin: "$PLUGIN_ID"
-                
-                advancedVersioning {
-                    nameOptions {
-                      versionMajor 1
-                      versionMinor 3
-                      versionPatch 6
-                      versionBuild 8
-                    }
-                  outputOptions {
-                      renameOutput true
-                      nameFormat 'MyApp-${'$'}{versionName}'
-                  }
-                }
-
-                android {
-                  compileSdkVersion 29
-                  buildToolsVersion "29.0.2"
-                  defaultConfig {
-                    applicationId "com.example.myapplication"
-                    minSdkVersion 14
-                    targetSdkVersion 26
-                    versionCode 1
-                    versionName advancedVersioning.versionName
-                  }
-                }
-                """.trimIndent()
+        val exception = assertThrows(UnexpectedBuildFailure::class.java) {
+            GradleRunner.create()
+                .withProjectDir(testProjectRoot.root)
+                .withPluginClasspath()
+                .withGradleVersion(CURRENT_GRADLE_VERSION)
+                .build()
+        }
+        assertThat(
+            exception.message,
+            containsString("gradle-advanced-build-version does not support Android Gradle plugin 3.1.0")
         )
-
-        val output = GradleRunner.create()
-            .withProjectDir(testProjectRoot.root)
-            .withPluginClasspath()
-            .withGradleVersion("6.1.1")
-            .withArguments("assemble")
-            .build()
-        assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
-        assertThat(output.output, containsString("outputFileName renamed to MyApp-1.3.6.8.apk"))
     }
 
     @Test
-    fun `outputOptions check versionName and renameOutput is correct for android gradle plugin 4_1_0`() {
+    fun `outputOptions check versionName and renameOutput is correct for android gradle plugin 7_0_0`() {
         publishToLocalMaven()
 
         File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
@@ -320,7 +257,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   }
 
                   dependencies {
-                    classpath 'com.android.tools.build:gradle:4.1.0'
+                    classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
                 }
@@ -347,8 +284,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 }
 
                 android {
-                  compileSdkVersion 29
-                  buildToolsVersion "29.0.2"
+                  compileSdkVersion 30
+                  buildToolsVersion "30.0.2"
                   defaultConfig {
                     applicationId "com.example.myapplication"
                     minSdkVersion 14
@@ -356,6 +293,9 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     versionCode 1
                     versionName advancedVersioning.versionName
                   }
+                  lintOptions {
+                       abortOnError false
+                    }
                 }
                 advancedVersioning.renameOutputApk()
                 """.trimIndent()
@@ -364,7 +304,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         val output = GradleRunner.create()
             .withProjectDir(testProjectRoot.root)
             .withPluginClasspath()
-            .withGradleVersion("6.5")
+            .withGradleVersion(CURRENT_GRADLE_VERSION)
             .withArguments("assemble")
             .build()
         assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
@@ -385,7 +325,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   }
                 
                   dependencies {
-                    classpath 'com.android.tools.build:gradle:3.1.0'
+                    classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
                 }
@@ -407,7 +347,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             GradleRunner.create()
                 .withProjectDir(testProjectRoot.root)
                 .withPluginClasspath()
-                .withGradleVersion("5.0")
+                .withGradleVersion(CURRENT_GRADLE_VERSION)
                 .build()
         }
         assertThat(
@@ -434,6 +374,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
     companion object {
         private const val CLASSPATH = "me.moallemi.gradle:advanced-build-version"
+        private const val CURRENT_GRADLE_VERSION = "7.0.2"
+        private const val MIN_AGP_SUPPORTED_VERSION = "7.0.0-beta03"
         private val PLUGIN_ID by lazy {
             ProjectProps.load().advancedBuildPluginId
         }
