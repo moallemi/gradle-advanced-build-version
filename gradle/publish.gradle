@@ -25,5 +25,4 @@ task javadocJar(type: Jar) {
 }
 
 apply from: 'gradle/maven-publish.gradle'
-apply from: 'gradle/bintray-publish.gradle'
 apply from: 'gradle/gradle-publish.gradle'
