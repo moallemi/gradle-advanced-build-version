@@ -22,7 +22,6 @@ import me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin
 import me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin.Companion.EXTENSION_NAME
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_DATE
-import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.DATE
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 import org.eclipse.jgit.api.Git
 import org.gradle.api.Project
@@ -38,15 +37,6 @@ class VersionCodeConfigTest {
 
     @get:Rule
     var testProjectRoot = TemporaryFolder()
-
-    @Test
-    fun `Check versionCodeType = DATE`() {
-        val advancedVersioning = givenProject()
-
-        advancedVersioning.versionCodeConfig.versionCodeType(DATE)
-
-        assertThat(advancedVersioning.versionCode, lessThan(MAX_VERSION_CODE))
-    }
 
     @Test
     fun `Check versionCodeType = AUTO_INCREMENT_DATE`() {
