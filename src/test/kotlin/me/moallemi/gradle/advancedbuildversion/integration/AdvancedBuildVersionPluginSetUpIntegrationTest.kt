@@ -375,7 +375,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     companion object {
         private const val CLASSPATH = "me.moallemi.gradle:advanced-build-version"
         private const val CURRENT_GRADLE_VERSION = "7.0.2"
-        private const val MIN_AGP_SUPPORTED_VERSION = "7.0.0-beta03"
+        private const val MIN_AGP_SUPPORTED_VERSION = "7.0.0"
         private val PLUGIN_ID by lazy {
             ProjectProps.load().advancedBuildPluginId
         }
