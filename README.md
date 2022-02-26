@@ -18,14 +18,22 @@ A plugin to generate the Android version code and version name automatically bas
 Add the advanced-build-version plugin to your build script and use the property `advancedVersioning.versionName` and
 `advancedVersioning.versionCode` where you need:
 
+Using the plugins DSL:
+```groovy
+plugins {
+    id "me.moallemi.advanced-build-version" version "2.0.0"
+}
+```
+
+Using legacy plugin application:
 ```groovy
 buildscript {
   repositories {
-    jcenter()
+    mavenCentral()
   }
 
   dependencies {
-    classpath 'me.moallemi.gradle:advanced-build-version:1.7.3'
+    classpath 'me.moallemi.gradle:advanced-build-version:2.0.0'
   }
 }
 
@@ -111,9 +119,7 @@ advancedVersioning {
 `versionCodeType` can be one of following params:
  
  * `GIT_COMMIT_COUNT` will output total commits number in current branch
- * `DATE` formatted number e.g.: 1501101614
  * `AUTO_INCREMENT_DATE` will output 101101614
- * <del>`AUTO_INCREMENT_ONE_STEP`</del> will output e.g: 24
  * `AUTO_INCREMENT_STEP` will output e.g: 26
  
  `AUTO_INCREMENT_ONE_STEP` and `AUTO_INCREMENT_STEP` store AI_VERSION_CODE in `version.properties` file in build.gradle 
@@ -236,7 +242,7 @@ If your app name is MyApp with 4.6.1 version name the output apk file name will 
 ## License
 
 ```
-Copyright 2020 Reza Moallemi.
+Copyright 2022 Reza Moallemi.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements. See the NOTICE file distributed with this work for
