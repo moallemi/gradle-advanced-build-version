@@ -50,6 +50,6 @@ publishing {
 
 signing {
     required !version.endsWith('SNAPSHOT')
-    useInMemoryPgpKeys(System.getenv('SIGNING_KEY'), System.getenv('SIGNING_PASSWORD'))
+    useInMemoryPgpKeys(System.getenv('PGP_SIGNING_KEY'), System.getenv('PGP_SIGNING_PASSWORD'))
     sign(publishing.publications["advancedBuildVersion"])
 }

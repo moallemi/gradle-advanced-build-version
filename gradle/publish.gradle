@@ -1,7 +1,7 @@
 
 project.description = "Generate Android version code and version name automatically from git tags, date,... ."
 project.group = "me.moallemi.gradle"
-project.version = "1.7.4"
+project.version = "2.0.0"
 
 project.ext {
     pluginId = 'me.moallemi.advanced-build-version'
