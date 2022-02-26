@@ -324,7 +324,7 @@ class CompatibilityManagerKtTest {
         }
         assertEquals(
             exception.message,
-            "\"gradle-advanced-build-version\" plugin requires this build to run with Java 11"
+            "\"gradle-advanced-build-version\" plugin requires this build to run with Java 11+"
         )
     }
 

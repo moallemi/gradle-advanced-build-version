@@ -43,8 +43,8 @@ fun checkMinimumGradleVersion() {
 }
 
 fun checkJavaRuntimeVersion() {
-    if (JavaVersion.current() != JavaVersion.VERSION_11) {
-        throw GradleException("\"gradle-advanced-build-version\" plugin requires this build to run with Java 11")
+    if (JavaVersion.current() < JavaVersion.VERSION_11) {
+        throw GradleException("\"gradle-advanced-build-version\" plugin requires this build to run with Java 11+")
     }
 }
 
