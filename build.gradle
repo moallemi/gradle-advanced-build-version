@@ -1,6 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.32'
-    id "com.gradle.plugin-publish" version "0.10.1"
+    id "com.gradle.plugin-publish" version "0.20.0"
     id 'java-gradle-plugin'
 
     id 'com.diffplug.gradle.spotless' version '4.5.1'
