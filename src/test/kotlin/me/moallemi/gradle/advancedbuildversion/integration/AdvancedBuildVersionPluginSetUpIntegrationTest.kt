@@ -87,7 +87,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         }
         assertThat(
             exception.message,
-            containsString("gradle-advanced-build-version only works with Android gradle library.")
+            containsString("gradle-advanced-build-version only works with android application modules")
         )
     }
 
@@ -149,6 +149,49 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 
                 apply plugin: 'com.android.application'
                 apply plugin: "$PLUGIN_ID"
+                
+                android {
+                  compileSdkVersion 29
+                  buildToolsVersion "29.0.2"
+                  defaultConfig {
+                    applicationId "com.example.myapplication"
+                    minSdkVersion 14
+                    targetSdkVersion 22
+                    versionCode 1
+                    versionName "1.0"
+                  }
+                }
+                """.trimIndent()
+        )
+
+        val output = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion(CURRENT_GRADLE_VERSION)
+            .build()
+        assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
+    }
+
+    @Test
+    fun `plugin works with android application plugin applied`() {
+        publishToLocalMaven()
+
+        File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+
+        writeBuildGradle(
+            """
+                buildscript {
+                  repositories {
+                    google()
+                    jcenter()
+                    mavenLocal()
+                  }
+                }
+                
+                plugins {
+                    id("com.android.application")
+                    id("$PLUGIN_ID")
+                }
                 
                 android {
                   compileSdkVersion 29
