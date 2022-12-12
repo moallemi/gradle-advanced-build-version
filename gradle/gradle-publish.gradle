@@ -12,7 +12,7 @@ pluginBundle {
     website = project.url
     vcsUrl = project.url
     description = project.description
-    tags = ['android', 'versionName', 'versionName', 'plugin', 'versionCode', 'git']
+    tags = ['android', 'versionName', 'versionCode', 'git']
 
     plugins {
         myPlugin {
