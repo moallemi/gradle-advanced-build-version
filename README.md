@@ -21,7 +21,7 @@ Add the advanced-build-version plugin to your build script and use the property 
 Using the plugins DSL:
 ```groovy
 plugins {
-    id "me.moallemi.advanced-build-version" version "2.0.0"
+    id "me.moallemi.advanced-build-version" version "2.0.1"
 }
 ```
 
@@ -33,7 +33,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'me.moallemi.gradle:advanced-build-version:2.0.0'
+    classpath 'me.moallemi.gradle:advanced-build-version:2.0.1'
   }
 }
 
