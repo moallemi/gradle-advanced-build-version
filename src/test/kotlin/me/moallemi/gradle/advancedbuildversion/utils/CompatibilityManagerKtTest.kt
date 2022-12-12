@@ -48,12 +48,13 @@ class CompatibilityManagerKtTest {
             every { iterator().hasNext() } returns false
         }
 
-        val exception = assertThrows(IllegalStateException::class.java) {
+        every { project.plugins.hasPlugin(any<String>()) } returns false
+
+        val exception = assertThrows(GradleException::class.java) {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "The Android Gradle plugin not found. " +
-                "gradle-advanced-build-version only works with Android gradle library."
+            exception.message, "gradle-advanced-build-version only works with android application modules"
         )
     }
 

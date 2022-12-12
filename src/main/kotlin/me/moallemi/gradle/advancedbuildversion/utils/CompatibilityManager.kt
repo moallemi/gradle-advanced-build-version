@@ -24,12 +24,7 @@ import org.gradle.util.GradleVersion
 
 fun checkAndroidGradleVersion(project: Project) {
     val androidGradlePlugin = getAndroidPlugin(project)
-    if (androidGradlePlugin == null) {
-        throw IllegalStateException(
-            "The Android Gradle plugin not found. " +
-                "gradle-advanced-build-version only works with Android gradle library."
-        )
-    } else if (!checkAndroidVersion(androidGradlePlugin.version)) {
+    if (androidGradlePlugin != null && !checkAndroidVersion(androidGradlePlugin.version)) {
         throw GradleException("gradle-advanced-build-version does not support Android Gradle plugin ${androidGradlePlugin.version}")
     } else if (!project.plugins.hasPlugin("com.android.application")) {
         throw GradleException("gradle-advanced-build-version only works with android application modules")
