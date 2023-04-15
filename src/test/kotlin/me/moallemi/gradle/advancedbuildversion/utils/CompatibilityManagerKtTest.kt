@@ -309,7 +309,7 @@ class CompatibilityManagerKtTest {
     fun `minimum Java Version is supported`() {
         mockkStatic(JavaVersion::class)
 
-        every { JavaVersion.current() } returns JavaVersion.VERSION_11
+        every { JavaVersion.current() } returns JavaVersion.VERSION_17
 
         checkJavaRuntimeVersion()
     }
@@ -325,7 +325,7 @@ class CompatibilityManagerKtTest {
         }
         assertEquals(
             exception.message,
-            "\"gradle-advanced-build-version\" plugin requires this build to run with Java 11+"
+            "\"gradle-advanced-build-version\" plugin requires this build to run with Java 17+"
         )
     }
 

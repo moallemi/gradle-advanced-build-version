@@ -1,10 +1,6 @@
 
 apply plugin: 'com.adarshr.test-logger'
 
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 test {
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
