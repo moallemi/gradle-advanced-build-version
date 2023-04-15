@@ -151,6 +151,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 apply plugin: "$PLUGIN_ID"
                 
                 android {
+                  namespace 'com.example.namespace'
                   compileSdkVersion 29
                   buildToolsVersion "29.0.2"
                   defaultConfig {
@@ -194,6 +195,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 }
                 
                 android {
+                  namespace 'com.example.namespace'
                   compileSdkVersion 29
                   buildToolsVersion "29.0.2"
                   defaultConfig {
@@ -258,6 +260,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 }
 
                 android {
+                  namespace 'com.example.namespace'
                   compileSdkVersion 29
                   buildToolsVersion "29.0.2"
                   defaultConfig {
@@ -327,6 +330,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 }
 
                 android {
+                  namespace 'com.example.namespace'
                   compileSdkVersion 30
                   buildToolsVersion "30.0.2"
                   defaultConfig {
@@ -377,6 +381,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 apply plugin: "$PLUGIN_ID"
                 
                 android {
+                  namespace 'com.example.namespace'
                   compileSdkVersion 29
                   buildToolsVersion "29.0.2"
                   defaultConfig {
@@ -417,8 +422,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
     companion object {
         private const val CLASSPATH = "me.moallemi.gradle:advanced-build-version"
-        private const val CURRENT_GRADLE_VERSION = "7.0.2"
-        private const val MIN_AGP_SUPPORTED_VERSION = "7.0.0"
+        private const val CURRENT_GRADLE_VERSION = "8.0"
+        private const val MIN_AGP_SUPPORTED_VERSION = "8.0.0"
         private val PLUGIN_ID by lazy {
             ProjectProps.load().advancedBuildPluginId
         }

@@ -330,6 +330,6 @@ class CompatibilityManagerKtTest {
     }
 
     companion object {
-        private const val MIN_AGP_SUPPORTED_VERSION = "7.0.0"
+        private const val MIN_AGP_SUPPORTED_VERSION = "8.0.0"
     }
 }

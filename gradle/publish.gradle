@@ -1,10 +1,10 @@
 
 project.description = "Generate Android version code and version name automatically from git tags, date,... ."
 project.group = "me.moallemi.gradle"
-project.version = "2.0.1"
+project.version = "100.0.4"
 
 project.ext {
-    pluginId = 'me.moallemi.advanced-build-version'
+    pluginId = 'me.moallemi.gradle.advanced-build-version'
     artifactId = 'advanced-build-version'
     name = 'Gradle Advanced Build Version Plugin'
     url = "https://github.com/moallemi/gradle-advanced-build-version"

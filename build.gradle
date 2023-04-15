@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.20'
     id "com.gradle.plugin-publish" version "0.20.0"
     id 'java-gradle-plugin'
 
@@ -16,9 +16,8 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
-    implementation "com.android.tools.build:gradle:7.0.2"
-    implementation "org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.20"
+    implementation "com.android.tools.build:gradle:8.0.0"
 
     testImplementation gradleTestKit()
     testImplementation 'junit:junit:4.13.2'

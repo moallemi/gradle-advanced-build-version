@@ -37,7 +37,6 @@ import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.impldep.org.eclipse.jgit.errors.NotSupportedException
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
@@ -117,7 +116,7 @@ class AdvancedBuildVersionPluginTest {
             project.plugins.all(capture(pluginsSlot))
         } answers { pluginsSlot.captured.execute(libraryPlugin) }
 
-        val exception = assertThrows(NotSupportedException::class.java) {
+        val exception = assertThrows(IllegalStateException::class.java) {
             plugin.apply(project)
         }
         assertEquals(exception.message, "Library module is not supported yet")
@@ -137,7 +136,7 @@ class AdvancedBuildVersionPluginTest {
             project.plugins.all(capture(pluginsSlot))
         } answers { pluginsSlot.captured.execute(featurePlugin) }
 
-        val exception = assertThrows(NotSupportedException::class.java) {
+        val exception = assertThrows(IllegalStateException::class.java) {
             plugin.apply(project)
         }
         assertEquals(exception.message, "Feature module is not supported")

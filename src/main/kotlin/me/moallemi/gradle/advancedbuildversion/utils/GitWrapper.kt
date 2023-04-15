@@ -16,24 +16,17 @@
 
 package me.moallemi.gradle.advancedbuildversion.utils
 
-import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.lib.Repository
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import java.io.ByteArrayOutputStream
 import org.gradle.api.Project
 
 class GitWrapper(private val project: Project) {
 
-    private val repository: Repository by lazy {
-        FileRepositoryBuilder()
-            .readEnvironment()
-            .findGitDir(project.projectDir)
-            .build()
+    fun getCommitsNumberInBranch(): Int {
+        val output = ByteArrayOutputStream()
+        project.exec {
+            it.commandLine("git", "rev-list", "--count", "HEAD")
+            it.standardOutput = output
+        }
+        return output.toString().trim().toInt()
     }
-
-    private val git: Git by lazy {
-        Git.wrap(repository)
-    }
-
-    fun getCommitsNumberInBranch() =
-        git.log().call().count()
 }

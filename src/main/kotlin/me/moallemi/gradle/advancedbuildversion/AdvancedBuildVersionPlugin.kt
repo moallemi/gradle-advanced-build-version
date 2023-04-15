@@ -27,7 +27,6 @@ import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 import me.moallemi.gradle.advancedbuildversion.utils.getAndroidPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.impldep.org.eclipse.jgit.errors.NotSupportedException
 
 class AdvancedBuildVersionPlugin : Plugin<Project> {
 
@@ -46,8 +45,8 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
             project.plugins.all { plugin ->
                 when (plugin) {
                     is AppPlugin -> configureAndroid(project, advancedBuildVersionPlugin)
-                    is FeaturePlugin -> throw NotSupportedException("Feature module is not supported")
-                    is LibraryPlugin -> throw NotSupportedException("Library module is not supported yet")
+                    is FeaturePlugin -> throw IllegalStateException("Feature module is not supported")
+                    is LibraryPlugin -> throw IllegalStateException("Library module is not supported yet")
                 }
             }
         }

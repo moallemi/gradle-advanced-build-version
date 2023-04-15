@@ -24,10 +24,15 @@ import org.gradle.util.GradleVersion
 
 fun checkAndroidGradleVersion(project: Project) {
     val androidGradlePlugin = getAndroidPlugin(project)
+    println(androidGradlePlugin?.version)
+    println(androidGradlePlugin)
+    println("nonono")
     if (androidGradlePlugin != null && !checkAndroidVersion(androidGradlePlugin.version)) {
         throw GradleException("gradle-advanced-build-version does not support Android Gradle plugin ${androidGradlePlugin.version}")
     } else if (!project.plugins.hasPlugin("com.android.application")) {
         throw GradleException("gradle-advanced-build-version only works with android application modules")
+    } else {
+        println("goooooo")
     }
 }
 
@@ -44,7 +49,7 @@ fun checkJavaRuntimeVersion() {
 }
 
 private fun checkAndroidVersion(version: String?) =
-    listOf("7.").any { version?.startsWith(it) ?: false }
+    listOf("8.").any { version?.startsWith(it) ?: false }
 
 fun getAndroidPlugin(project: Project): Dependency? =
     findClassPathDependencyVersion(
