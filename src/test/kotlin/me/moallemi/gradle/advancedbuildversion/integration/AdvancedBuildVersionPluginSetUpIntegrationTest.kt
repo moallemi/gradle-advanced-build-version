@@ -48,12 +48,12 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             GradleRunner.create()
                 .withProjectDir(testProjectRoot.root)
                 .withPluginClasspath()
-                .withGradleVersion("6.8.2")
+                .withGradleVersion("7.2")
                 .build()
         }
         assertThat(
             exception.message,
-            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 6.8.2")
+            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 7.2")
         )
     }
 

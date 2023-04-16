@@ -284,7 +284,7 @@ class CompatibilityManagerKtTest {
     fun `minimum Gradle Version is supported`() {
         mockkStatic(GradleVersion::class)
 
-        every { GradleVersion.current() } returns GradleVersion.version("7.0.0")
+        every { GradleVersion.current() } returns GradleVersion.version("7.3.0")
 
         checkMinimumGradleVersion()
     }

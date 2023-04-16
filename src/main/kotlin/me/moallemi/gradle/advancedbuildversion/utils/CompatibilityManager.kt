@@ -67,6 +67,6 @@ private fun findClassPathDependencyVersion(project: Project, group: String, attr
         group == it.group && it.name == attributeId
     }
 
-internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("7.0.0")
+internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("7.3.0")
 internal const val ANDROID_GRADLE_PLUGIN_GROUP = "com.android.tools.build"
 internal const val ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID = "gradle"
