@@ -16,10 +16,12 @@
 
 package me.moallemi.gradle.advancedbuildversion
 
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -96,6 +98,14 @@ class AdvancedBuildVersionPluginTest {
         } returns mockk {
             every { applicationVariants } returns mockk()
         }
+
+        every {
+            project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
+        } returns mockk(relaxed = true, relaxUnitFun = true)
+
+        every {
+            project.extensions.getByType(BaseAppModuleExtension::class.java)
+        } returns mockk(relaxed = true, relaxUnitFun = true)
 
         mockGetAndroidPlugin()
 

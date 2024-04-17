@@ -88,7 +88,9 @@ class CompatibilityManagerKtTest {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "gradle-advanced-build-version does not support Android Gradle plugin 2.0"
+            exception.message,
+            "gradle-advanced-build-version does not support Android Gradle plugin 2.0." +
+                " Minimum supported version is $ANDROID_GRADLE_MIN_VERSION.",
         )
     }
 
@@ -122,7 +124,9 @@ class CompatibilityManagerKtTest {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "gradle-advanced-build-version does not support Android Gradle plugin null"
+            exception.message,
+            "gradle-advanced-build-version does not support Android Gradle plugin null." +
+                " Minimum supported version is $ANDROID_GRADLE_MIN_VERSION.",
         )
     }
 
@@ -139,7 +143,7 @@ class CompatibilityManagerKtTest {
                         every { iterator().next() } returns mockk {
                             every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                             every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                            every { version } returns MIN_AGP_SUPPORTED_VERSION
+                            every { version } returns ANDROID_GRADLE_MIN_VERSION
                         }
                     }
                 }
@@ -175,7 +179,7 @@ class CompatibilityManagerKtTest {
                         every { iterator().next() } returns mockk {
                             every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                             every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                            every { version } returns MIN_AGP_SUPPORTED_VERSION
+                            every { version } returns ANDROID_GRADLE_MIN_VERSION
                         }
                     }
                 }
@@ -211,7 +215,9 @@ class CompatibilityManagerKtTest {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "gradle-advanced-build-version does not support Android Gradle plugin 2.0"
+            exception.message,
+            "gradle-advanced-build-version does not support Android Gradle plugin 2.0." +
+                " Minimum supported version is $ANDROID_GRADLE_MIN_VERSION.",
         )
     }
 
@@ -233,7 +239,9 @@ class CompatibilityManagerKtTest {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "gradle-advanced-build-version does not support Android Gradle plugin null"
+            exception.message,
+            "gradle-advanced-build-version does not support Android Gradle plugin null." +
+                " Minimum supported version is $ANDROID_GRADLE_MIN_VERSION.",
         )
     }
 
@@ -247,7 +255,7 @@ class CompatibilityManagerKtTest {
             every { iterator().next() } returns mockk {
                 every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                 every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                every { version } returns MIN_AGP_SUPPORTED_VERSION
+                every { version } returns ANDROID_GRADLE_MIN_VERSION
             }
         }
 
@@ -271,7 +279,7 @@ class CompatibilityManagerKtTest {
             every { iterator().next() } returns mockk {
                 every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                 every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                every { version } returns MIN_AGP_SUPPORTED_VERSION
+                every { version } returns ANDROID_GRADLE_MIN_VERSION
             }
         }
 
@@ -284,7 +292,7 @@ class CompatibilityManagerKtTest {
     fun `minimum Gradle Version is supported`() {
         mockkStatic(GradleVersion::class)
 
-        every { GradleVersion.current() } returns GradleVersion.version("7.3.0")
+        every { GradleVersion.current() } returns GradleVersion.version("8.4")
 
         checkMinimumGradleVersion()
     }
@@ -327,9 +335,5 @@ class CompatibilityManagerKtTest {
             exception.message,
             "\"gradle-advanced-build-version\" plugin requires this build to run with Java 17+"
         )
-    }
-
-    companion object {
-        private const val MIN_AGP_SUPPORTED_VERSION = "8.0.0"
     }
 }

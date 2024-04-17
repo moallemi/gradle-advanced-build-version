@@ -16,12 +16,11 @@
 
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.api.variant.ApplicationVariant
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import groovy.lang.Closure
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import me.moallemi.gradle.advancedbuildversion.utils.closureOf
-import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 
 open class AdvancedBuildVersionConfig(private val project: Project) {
@@ -68,13 +67,18 @@ open class AdvancedBuildVersionConfig(private val project: Project) {
         versionCodeConfig.increaseVersionCodeIfPossible()
     }
 
-    internal fun renameOutputApkIfPossible(variants: DomainObjectSet<ApplicationVariant>) {
-        outputConfig.renameOutputApkIfPossible(variants)
+    internal fun renameOutputApkIfPossible(
+        applicationVariant: ApplicationVariant,
+        baseVariantOutput: BaseVariantOutputImpl,
+    ) {
+        outputConfig.renameOutputApkIfPossible(applicationVariant, baseVariantOutput)
     }
 
+    @Deprecated(
+        "No need to call This method anymore.It will be removed in a future release.",
+        level = DeprecationLevel.WARNING,
+    )
     fun renameOutputApk() {
-        project.extensions.findByType(AppExtension::class.java)?.run {
-            outputConfig.renameOutputApkIfPossible(applicationVariants)
-        }
+        println("No need to call renameOutputApk(). This method will be removed in a future release.")
     }
 }

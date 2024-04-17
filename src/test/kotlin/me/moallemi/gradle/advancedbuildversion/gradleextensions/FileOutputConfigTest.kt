@@ -16,8 +16,7 @@
 
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
-import com.android.build.gradle.api.ApplicationVariant
-import com.android.build.gradle.api.BaseVariantOutput
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -40,13 +39,15 @@ class FileOutputConfigTest {
         every { rootProject.name } returns PROJECT_NAME
     }
 
-    private val variants: DomainObjectSet<ApplicationVariant> = mockk()
-
     private val variant: ApplicationVariant = mockk {
         every { flavorName } returns FLAVOR_NAME
-        every { buildType.name } returns BUILD_TYPE
-        every { versionName } returns VERSION_NAME
-        every { versionCode } returns VERSION_CODE
+        every { buildType } returns BUILD_TYPE
+        every { outputs } returns listOf(
+            mockk {
+                every { versionName.get() } returns VERSION_NAME
+                every { versionCode.get() } returns VERSION_CODE
+            },
+        )
     }
 
     private val fileOutputConfig = FileOutputConfig(project)
@@ -58,12 +59,12 @@ class FileOutputConfigTest {
 
     @Test
     fun `must not rename apk by default`() {
-        val variants: DomainObjectSet<ApplicationVariant> = mockk()
+        val variants: ApplicationVariant = mockk()
 
-        fileOutputConfig.renameOutputApkIfPossible(variants)
+        fileOutputConfig.renameOutputApkIfPossible(mockk(), mockk())
 
         verify(exactly = 0) {
-            variants.all(any<Action<in ApplicationVariant>>())
+            variants.outputs
         }
     }
 
@@ -72,7 +73,7 @@ class FileOutputConfigTest {
         val variants: DomainObjectSet<ApplicationVariant> = mockk()
 
         fileOutputConfig.renameOutput(false)
-        fileOutputConfig.renameOutputApkIfPossible(variants)
+        fileOutputConfig.renameOutputApkIfPossible(mockk(), mockk())
 
         verify(exactly = 0) {
             variants.all(any<Action<in ApplicationVariant>>())
@@ -81,24 +82,13 @@ class FileOutputConfigTest {
 
     @Test
     fun `must rename apk if renameOutput = true and FLAVOR_NAME is not null`() {
-        val variantsSlot = slot<Action<in ApplicationVariant>>()
-        every { variants.all(capture(variantsSlot)) } answers { variantsSlot.captured.execute(variant) }
-
         val baseVariantOutputSlot = slot<String>()
         val baseVariantOutput: BaseVariantOutputImpl = mockk {
             every { outputFileName = capture(baseVariantOutputSlot) } just runs
         }
 
-        val outputsSlot = slot<Action<BaseVariantOutput>>()
-        every { variant.outputs.all(capture(outputsSlot)) } answers { outputsSlot.captured.execute(baseVariantOutput) }
-
         fileOutputConfig.renameOutput(true)
-        fileOutputConfig.renameOutputApkIfPossible(variants)
-
-        verify {
-            variants.all(any<Action<in ApplicationVariant>>())
-            variant.outputs.all(any<Action<BaseVariantOutput>>())
-        }
+        fileOutputConfig.renameOutputApkIfPossible(variant, baseVariantOutput)
 
         val apkFileName = "$APP_NAME-$FLAVOR_NAME-$BUILD_TYPE-$VERSION_NAME.apk"
         assertEquals(apkFileName, baseVariantOutputSlot.captured)
@@ -108,24 +98,13 @@ class FileOutputConfigTest {
     fun `must rename apk if renameOutput = true and FLAVOR_NAME is null`() {
         every { variant.flavorName } returns null
 
-        val variantsSlot = slot<Action<in ApplicationVariant>>()
-        every { variants.all(capture(variantsSlot)) } answers { variantsSlot.captured.execute(variant) }
-
         val baseVariantOutputSlot = slot<String>()
         val baseVariantOutput: BaseVariantOutputImpl = mockk {
             every { outputFileName = capture(baseVariantOutputSlot) } just runs
         }
 
-        val outputsSlot = slot<Action<BaseVariantOutput>>()
-        every { variant.outputs.all(capture(outputsSlot)) } answers { outputsSlot.captured.execute(baseVariantOutput) }
-
         fileOutputConfig.renameOutput(true)
-        fileOutputConfig.renameOutputApkIfPossible(variants)
-
-        verify {
-            variants.all(any<Action<in ApplicationVariant>>())
-            variant.outputs.all(any<Action<BaseVariantOutput>>())
-        }
+        fileOutputConfig.renameOutputApkIfPossible(variant, baseVariantOutput)
 
         val apkFileName = "$APP_NAME-$BUILD_TYPE-$VERSION_NAME.apk"
         assertEquals(apkFileName, baseVariantOutputSlot.captured)
@@ -135,25 +114,14 @@ class FileOutputConfigTest {
     fun `must rename apk if renameOutput = true and nameFormat MyApp-google-play-VERSION-NAME`() {
         every { variant.flavorName } returns null
 
-        val variantsSlot = slot<Action<in ApplicationVariant>>()
-        every { variants.all(capture(variantsSlot)) } answers { variantsSlot.captured.execute(variant) }
-
         val baseVariantOutputSlot = slot<String>()
         val baseVariantOutput: BaseVariantOutputImpl = mockk {
             every { outputFileName = capture(baseVariantOutputSlot) } just runs
         }
 
-        val outputsSlot = slot<Action<BaseVariantOutput>>()
-        every { variant.outputs.all(capture(outputsSlot)) } answers { outputsSlot.captured.execute(baseVariantOutput) }
-
         fileOutputConfig.renameOutput(true)
         fileOutputConfig.nameFormat("MyApp-google-play-\$versionName")
-        fileOutputConfig.renameOutputApkIfPossible(variants)
-
-        verify {
-            variants.all(any<Action<in ApplicationVariant>>())
-            variant.outputs.all(any<Action<BaseVariantOutput>>())
-        }
+        fileOutputConfig.renameOutputApkIfPossible(variant, baseVariantOutput)
 
         val apkFileName = "MyApp-google-play-$VERSION_NAME.apk"
         assertEquals(apkFileName, baseVariantOutputSlot.captured)

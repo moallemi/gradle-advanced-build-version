@@ -128,7 +128,7 @@ class AdvancedBuildVersionConfigTest {
 
     @Test
     fun `renameOutputApkIfPossible runs`() {
-        config.renameOutputApkIfPossible(mockk())
+        config.renameOutputApkIfPossible(mockk(), mockk())
     }
 
     @Test

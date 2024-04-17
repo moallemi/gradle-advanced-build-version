@@ -16,10 +16,9 @@
 
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
-import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.api.variant.ApplicationVariant
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import groovy.text.SimpleTemplateEngine
-import org.gradle.api.DomainObjectSet
 import org.gradle.api.Project
 
 class FileOutputConfig(private val project: Project) {
@@ -38,25 +37,30 @@ class FileOutputConfig(private val project: Project) {
         renameOutput = b
     }
 
-    fun renameOutputApkIfPossible(variants: DomainObjectSet<ApplicationVariant>) {
+    fun renameOutputApkIfPossible(
+        applicationVariant: ApplicationVariant,
+        baseVariantOutput: BaseVariantOutputImpl,
+    ) {
         if (renameOutput) {
-            variants.all { variant ->
-                generateOutputName(variant)
-            }
+            generateOutputName(applicationVariant, baseVariantOutput)
         }
     }
 
-    private fun generateOutputName(variant: ApplicationVariant) {
+    private fun generateOutputName(
+        applicationVariant: ApplicationVariant,
+        baseVariantOutput: BaseVariantOutputImpl,
+    ) {
         val map = linkedMapOf(
             "appName" to project.name,
             "projectName" to project.rootProject.name,
-            "flavorName" to variant.flavorName,
-            "buildType" to variant.buildType.name,
-            "versionName" to (variant.versionName ?: ""),
-            "versionCode" to variant.versionCode.toString()
+            "flavorName" to applicationVariant.flavorName,
+            "buildType" to applicationVariant.buildType,
+            "versionName" to applicationVariant.outputs.first().versionName.get(),
+            "versionCode" to applicationVariant.outputs.first().versionCode.get().toString(),
+
         )
 
-        val template = nameFormat ?: variant.flavorName
+        val template = nameFormat ?: applicationVariant.flavorName
             ?.takeIf { it.isNotBlank() }
             ?.let {
                 "\$appName-\$flavorName-\$buildType-\$versionName"
@@ -67,10 +71,7 @@ class FileOutputConfig(private val project: Project) {
             .make(map)
             .toString()
 
-        variant.outputs.all { output ->
-            val outputImpl = output as BaseVariantOutputImpl
-            outputImpl.outputFileName = "$fileName.apk"
-            println("outputFileName renamed to $fileName.apk")
-        }
+        baseVariantOutput.outputFileName = "$fileName.apk"
+        println("outputFileName renamed to $fileName.apk")
     }
 }

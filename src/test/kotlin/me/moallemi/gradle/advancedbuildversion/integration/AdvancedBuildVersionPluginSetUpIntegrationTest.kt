@@ -152,12 +152,11 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 29
-                  buildToolsVersion "29.0.2"
+                  compileSdkVersion 33
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 14
-                    targetSdkVersion 22
+                    minSdkVersion 19
+                    targetSdkVersion 33
                     versionCode 1
                     versionName "1.0"
                   }
@@ -196,12 +195,11 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 29
-                  buildToolsVersion "29.0.2"
+                  compileSdkVersion 33
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 14
-                    targetSdkVersion 22
+                    minSdkVersion 19
+                    targetSdkVersion 33
                     versionCode 1
                     versionName "1.0"
                   }
@@ -261,12 +259,11 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 29
-                  buildToolsVersion "29.0.2"
+                  compileSdkVersion 33
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 14
-                    targetSdkVersion 22
+                    minSdkVersion 19
+                    targetSdkVersion 33
                     versionCode 1
                     versionName advancedVersioning.versionName
                   }
@@ -331,12 +328,11 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 30
-                  buildToolsVersion "30.0.2"
+                  compileSdkVersion 33
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 14
-                    targetSdkVersion 26
+                    minSdkVersion 19
+                    targetSdkVersion 33
                     versionCode 1
                     versionName advancedVersioning.versionName
                   }
@@ -382,8 +378,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 29
-                  buildToolsVersion "29.0.2"
+                  compileSdkVersion 33
                   defaultConfig {
                       minSdkVersion 14
                   }
@@ -422,8 +417,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
     companion object {
         private const val CLASSPATH = "me.moallemi.gradle:advanced-build-version"
-        private const val CURRENT_GRADLE_VERSION = "8.0"
-        private const val MIN_AGP_SUPPORTED_VERSION = "8.0.0"
+        private const val CURRENT_GRADLE_VERSION = "8.4"
+        private const val MIN_AGP_SUPPORTED_VERSION = "8.1.0"
         private val PLUGIN_ID by lazy {
             ProjectProps.load().advancedBuildPluginId
         }

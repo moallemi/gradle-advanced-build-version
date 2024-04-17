@@ -26,7 +26,10 @@ fun checkAndroidGradleVersion(project: Project) {
     val androidGradlePlugin = getAndroidPlugin(project)
 
     if (androidGradlePlugin != null && !checkAndroidVersion(androidGradlePlugin.version)) {
-        throw GradleException("gradle-advanced-build-version does not support Android Gradle plugin ${androidGradlePlugin.version}")
+        throw GradleException(
+            "gradle-advanced-build-version does not support Android Gradle plugin " +
+                "${androidGradlePlugin.version}. Minimum supported version is $ANDROID_GRADLE_MIN_VERSION.",
+        )
     } else if (!project.plugins.hasPlugin("com.android.application")) {
         throw GradleException("gradle-advanced-build-version only works with android application modules")
     }
@@ -44,8 +47,21 @@ fun checkJavaRuntimeVersion() {
     }
 }
 
-private fun checkAndroidVersion(version: String?) =
-    listOf("8.").any { version?.startsWith(it) ?: false }
+private fun checkAndroidVersion(version: String?): Boolean {
+    if (version == null) {
+        return false
+    }
+
+    val parts = version.split(".")
+    if (parts.size != 3) {
+        return false // Invalid format
+    }
+    val major = parts[0].toIntOrNull() ?: return false
+    val minor = parts[1].toIntOrNull() ?: return false
+
+    // we only support AGP 8.1.0+
+    return major >= 8 && minor >= 1
+}
 
 fun getAndroidPlugin(project: Project): Dependency? =
     findClassPathDependencyVersion(
@@ -63,6 +79,7 @@ private fun findClassPathDependencyVersion(project: Project, group: String, attr
         group == it.group && it.name == attributeId
     }
 
-internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("7.3.0")
+internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("8.4")
+internal const val ANDROID_GRADLE_MIN_VERSION = "8.1.0"
 internal const val ANDROID_GRADLE_PLUGIN_GROUP = "com.android.tools.build"
 internal const val ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID = "gradle"

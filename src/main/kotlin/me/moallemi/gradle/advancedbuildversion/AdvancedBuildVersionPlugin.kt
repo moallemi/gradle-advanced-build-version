@@ -16,15 +16,16 @@
 
 package me.moallemi.gradle.advancedbuildversion
 
-import com.android.build.gradle.AppExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.FeaturePlugin
 import com.android.build.gradle.LibraryPlugin
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import me.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
 import me.moallemi.gradle.advancedbuildversion.utils.checkJavaRuntimeVersion
 import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
-import me.moallemi.gradle.advancedbuildversion.utils.getAndroidPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -38,16 +39,16 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
         println("Applying Advanced Build Version Plugin")
 
         val advancedBuildVersionPlugin = project.extensions.create(
-            EXTENSION_NAME, AdvancedBuildVersionConfig::class.java, project
+            EXTENSION_NAME,
+            AdvancedBuildVersionConfig::class.java,
+            project,
         )
 
-        project.afterEvaluate {
-            project.plugins.all { plugin ->
-                when (plugin) {
-                    is AppPlugin -> configureAndroid(project, advancedBuildVersionPlugin)
-                    is FeaturePlugin -> throw IllegalStateException("Feature module is not supported")
-                    is LibraryPlugin -> throw IllegalStateException("Library module is not supported yet")
-                }
+        project.plugins.all { plugin ->
+            when (plugin) {
+                is AppPlugin -> configureAndroid(project, advancedBuildVersionPlugin)
+                is FeaturePlugin -> throw IllegalStateException("Feature module is not supported")
+                is LibraryPlugin -> throw IllegalStateException("Library module is not supported yet")
             }
         }
     }
@@ -55,9 +56,14 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
     private fun configureAndroid(project: Project, config: AdvancedBuildVersionConfig) {
         config.increaseVersionCodeIfPossible()
 
-        if (getAndroidPlugin(project)?.version?.compareTo("4.1.0") == -1) { // versions prior to 4.1.0
-            val appExtension = project.extensions.getByType(AppExtension::class.java)
-            config.renameOutputApkIfPossible(appExtension.applicationVariants)
+        val androidComponents = project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
+        val appExtension = project.extensions.getByType(BaseAppModuleExtension::class.java)
+
+        androidComponents.onVariants { applicationVariant ->
+            appExtension.buildOutputs.all { baseVariantOutput ->
+                val variantOutputImpl = baseVariantOutput as BaseVariantOutputImpl
+                config.renameOutputApkIfPossible(applicationVariant, variantOutputImpl)
+            }
         }
     }
 
