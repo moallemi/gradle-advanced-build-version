@@ -20,10 +20,9 @@ import java.util.Properties
 
 data class ProjectProps(
     val compileSdkVersion: String,
-    val buildToolsVersion: String,
     val minSdkVersion: String,
     val advancedBuildPluginVersion: String,
-    val advancedBuildPluginId: String
+    val advancedBuildPluginId: String,
 ) {
     companion object {
         fun load(): ProjectProps {
@@ -32,10 +31,9 @@ data class ProjectProps(
             properties.load(stream)
             return ProjectProps(
                 compileSdkVersion = properties.getProperty("compileSdkVersion"),
-                buildToolsVersion = properties.getProperty("buildToolsVersion"),
                 minSdkVersion = properties.getProperty("minSdkVersion"),
                 advancedBuildPluginVersion = properties.getProperty("advancedBuildPluginVersion"),
-                advancedBuildPluginId = properties.getProperty("advancedBuildPluginId")
+                advancedBuildPluginId = properties.getProperty("advancedBuildPluginId"),
             )
         }
     }

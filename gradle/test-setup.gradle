@@ -18,10 +18,11 @@ sourceSets {
     test.resources.srcDirs += generatedResources
 }
 
-task generateSdkResource() {
-    inputs.property("compileSdkVersion", 29)
-    inputs.property("buildToolsVersion", "29.0.2")
-    inputs.property("minSdkVersion", 14)
+tasks.register('generateSdkResource') {
+    inputs.property("compileSdkVersion", 33)
+    // No need to set this anymore, AGP had a default value for this
+    // inputs.property("buildToolsVersion", "33.0.1")
+    inputs.property("minSdkVersion", 19)
     inputs.property("advancedBuildPluginVersion", project.version)
     inputs.property("advancedBuildPluginId", project.pluginId)
     outputs.dir(generatedResources)
@@ -29,13 +30,16 @@ task generateSdkResource() {
         // Properties.write will have a timestamp, that invalidates the task,
         // so we don't use it and write a file manually
         new File("$generatedResources", "sdk.prop").withWriter('UTF-8') { writer ->
-            writer.write("compileSdkVersion=29\n")
-            writer.write("buildToolsVersion=29.0.2\n")
-            writer.write("minSdkVersion=14\n")
+            writer.write("compileSdkVersion=33\n")
+            // No need to set this anymore, AGP had a default value for this
+            //writer.write("buildToolsVersion=33.0.1\n")
+            writer.write("minSdkVersion=19\n")
             writer.write("advancedBuildPluginVersion=${project.version}\n")
             writer.write("advancedBuildPluginId=${project.pluginId}\n")
         }
     }
 }
 
-tasks["compileTestJava"].dependsOn generateSdkResource
+tasks.named("processTestResources").configure {
+    dependsOn(tasks.named("generateSdkResource"))
+}
