@@ -5,16 +5,14 @@ jacoco {
 }
 
 jacocoTestReport {
+    dependsOn test
     reports {
-        html {
-            enabled true
-            destination file('build/reports/jacoco/html')
-        }
-        xml {
-            enabled true
-            destination file('build/reports/jacoco/html/report.xml')
-        }
-        csv.enabled false
+        html.required = true
+        html.destination = file('build/reports/jacoco/html')
+
+        xml.required = true
+        xml.destination = file('build/reports/jacoco/html/report.xml')
+        csv.required = false
     }
     afterEvaluate {
         getClassDirectories().setFrom(
@@ -28,4 +26,3 @@ jacocoTestReport {
         )
     }
 }
-jacocoTestReport.dependsOn("test")
