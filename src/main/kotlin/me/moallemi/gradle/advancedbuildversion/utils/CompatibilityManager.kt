@@ -37,7 +37,10 @@ fun checkAndroidGradleVersion(project: Project) {
 
 fun checkMinimumGradleVersion() {
     if (GRADLE_MIN_VERSION > GradleVersion.current()) {
-        throw GradleException("\"gradle-advanced-build-version\" plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version ${GradleVersion.current()}.")
+        throw GradleException(
+            "\"gradle-advanced-build-version\" plugin requires at least minimum version" +
+                " $GRADLE_MIN_VERSION. Detected version ${GradleVersion.current()}.",
+        )
     }
 }
 
@@ -67,11 +70,11 @@ fun getAndroidPlugin(project: Project): Dependency? =
     findClassPathDependencyVersion(
         project,
         ANDROID_GRADLE_PLUGIN_GROUP,
-        ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
+        ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID,
     ) ?: findClassPathDependencyVersion(
         project.rootProject,
         ANDROID_GRADLE_PLUGIN_GROUP,
-        ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
+        ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID,
     )
 
 private fun findClassPathDependencyVersion(project: Project, group: String, attributeId: String) =

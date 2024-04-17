@@ -23,14 +23,14 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import java.io.File
-import java.lang.String.join
 import org.gradle.api.Project
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.File
+import java.lang.String.join
 
 class AdvancedBuildVersionConfigTest {
 

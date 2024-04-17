@@ -1,6 +1,15 @@
 spotless {
     kotlin {
-        ktlint("0.36.0")
-        licenseHeaderFile project.rootProject.file('gradle/copyright.kt')
+        target("**/*.kt")
+        targetExclude("$buildDir/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
+        licenseHeaderFile(rootProject.file('gradle/copyright.txt'))
+
+        ktlint()
+    }
+    format("kts") {
+        target("**/*.kts")
+        targetExclude("**/build/**/*.kts")
+        // Look for the first line that doesn't have a block comment (assumed to be the license)
+        licenseHeaderFile(rootProject.file("gradle/copyright.txt"), '(^(?![\\/ ]\\*).*$)')
     }
 }

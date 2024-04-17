@@ -16,8 +16,8 @@
 
 package me.moallemi.gradle.advancedbuildversion.utils
 
-import java.io.ByteArrayOutputStream
 import org.gradle.api.Project
+import java.io.ByteArrayOutputStream
 
 class GitWrapper(private val project: Project) {
 

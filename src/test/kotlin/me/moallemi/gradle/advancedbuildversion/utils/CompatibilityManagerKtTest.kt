@@ -54,7 +54,8 @@ class CompatibilityManagerKtTest {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "gradle-advanced-build-version only works with android application modules"
+            exception.message,
+            "gradle-advanced-build-version only works with android application modules",
         )
     }
 
@@ -162,7 +163,8 @@ class CompatibilityManagerKtTest {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "gradle-advanced-build-version only works with android application modules"
+            exception.message,
+            "gradle-advanced-build-version only works with android application modules",
         )
     }
 
@@ -265,7 +267,8 @@ class CompatibilityManagerKtTest {
             checkAndroidGradleVersion(project)
         }
         assertEquals(
-            exception.message, "gradle-advanced-build-version only works with android application modules"
+            exception.message,
+            "gradle-advanced-build-version only works with android application modules",
         )
     }
 
@@ -309,7 +312,7 @@ class CompatibilityManagerKtTest {
         assertEquals(
             exception.message,
             "\"gradle-advanced-build-version\" plugin requires at least minimum version $GRADLE_MIN_VERSION. " +
-                "Detected version ${GradleVersion.version("4.7.8")}."
+                "Detected version ${GradleVersion.version("4.7.8")}.",
         )
     }
 
@@ -333,7 +336,7 @@ class CompatibilityManagerKtTest {
         }
         assertEquals(
             exception.message,
-            "\"gradle-advanced-build-version\" plugin requires this build to run with Java 17+"
+            "\"gradle-advanced-build-version\" plugin requires this build to run with Java 17+",
         )
     }
 }

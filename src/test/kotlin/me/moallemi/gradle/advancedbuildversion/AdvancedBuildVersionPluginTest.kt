@@ -61,7 +61,7 @@ class AdvancedBuildVersionPluginTest {
             project.extensions.create(
                 any(),
                 AdvancedBuildVersionConfig::class.java,
-                any<Project>()
+                any<Project>(),
             )
         } returns mockk()
 
@@ -80,7 +80,6 @@ class AdvancedBuildVersionPluginTest {
 
     @Test
     fun `plugin applies successfully on Android Application module`() {
-
         val applicationPlugin = mockk<AppPlugin>()
         val pluginsSlot = slot<Action<in Plugin<*>>>()
         every {
@@ -89,7 +88,7 @@ class AdvancedBuildVersionPluginTest {
 
         every {
             project.extensions.create(
-                EXTENSION_NAME, AdvancedBuildVersionConfig::class.java, project
+                EXTENSION_NAME, AdvancedBuildVersionConfig::class.java, project,
             )
         } returns mockk(relaxUnitFun = true)
 
@@ -119,7 +118,6 @@ class AdvancedBuildVersionPluginTest {
 
     @Test
     fun `fails on applying to Android Library module`() {
-
         val libraryPlugin = mockk<LibraryPlugin>()
         val pluginsSlot = slot<Action<in Plugin<*>>>()
         every {
@@ -139,7 +137,6 @@ class AdvancedBuildVersionPluginTest {
 
     @Test
     fun `fails on applying to Android Feature module`() {
-
         val featurePlugin = mockk<FeaturePlugin>()
         val pluginsSlot = slot<Action<in Plugin<*>>>()
         every {

@@ -21,7 +21,7 @@ import groovy.lang.Closure
 class KotlinClosure<in T : Any?, V : Any>(
     val function: T.() -> V?,
     owner: Any? = null,
-    thisObject: Any? = null
+    thisObject: Any? = null,
 ) : Closure<V?>(owner, thisObject) {
 
     @Suppress("unused") // to be called dynamically by Groovy

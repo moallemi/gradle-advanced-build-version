@@ -16,8 +16,6 @@
 
 package me.moallemi.gradle.advancedbuildversion.integration
 
-import java.io.File
-import java.util.concurrent.TimeUnit
 import me.moallemi.gradle.advancedbuildversion.utils.GRADLE_MIN_VERSION
 import me.moallemi.gradle.advancedbuildversion.utils.ProjectProps
 import org.gradle.testkit.runner.GradleRunner
@@ -28,6 +26,8 @@ import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
@@ -41,7 +41,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         writeBuildGradle(
             """plugins {
                id "$PLUGIN_ID" version "$PLUGIN_VERSION"
-             }""".trimIndent()
+             }
+            """.trimIndent(),
         )
 
         val exception = assertThrows(UnexpectedBuildFailure::class.java) {
@@ -53,7 +54,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         }
         assertThat(
             exception.message,
-            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 7.2")
+            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 7.2"),
         )
     }
 
@@ -75,7 +76,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   }
                 }
                 apply plugin: "$PLUGIN_ID"
-                """.trimIndent()
+            """.trimIndent(),
         )
 
         val exception = assertThrows(UnexpectedBuildFailure::class.java) {
@@ -87,7 +88,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         }
         assertThat(
             exception.message,
-            containsString("gradle-advanced-build-version only works with android application modules")
+            containsString("gradle-advanced-build-version only works with android application modules"),
         )
     }
 
@@ -110,7 +111,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   }
                 }
                 apply plugin: "$PLUGIN_ID"
-                """.trimIndent()
+            """.trimIndent(),
         )
 
         val exception = assertThrows(UnexpectedBuildFailure::class.java) {
@@ -122,7 +123,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         }
         assertThat(
             exception.message,
-            containsString("gradle-advanced-build-version only works with android application modules")
+            containsString("gradle-advanced-build-version only works with android application modules"),
         )
     }
 
@@ -161,7 +162,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     versionName "1.0"
                   }
                 }
-                """.trimIndent()
+            """.trimIndent(),
         )
 
         val output = GradleRunner.create()
@@ -204,7 +205,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     versionName "1.0"
                   }
                 }
-                """.trimIndent()
+            """.trimIndent(),
         )
 
         val output = GradleRunner.create()
@@ -268,7 +269,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     versionName advancedVersioning.versionName
                   }
                 }
-                """.trimIndent()
+            """.trimIndent(),
         )
 
         val exception = assertThrows(UnexpectedBuildFailure::class.java) {
@@ -280,7 +281,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         }
         assertThat(
             exception.message,
-            containsString("gradle-advanced-build-version does not support Android Gradle plugin 3.1.0")
+            containsString("gradle-advanced-build-version does not support Android Gradle plugin 3.1.0"),
         )
     }
 
@@ -341,7 +342,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     }
                 }
                 advancedVersioning.renameOutputApk()
-                """.trimIndent()
+            """.trimIndent(),
         )
 
         val output = GradleRunner.create()
@@ -383,7 +384,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                       minSdkVersion 14
                   }
                 }
-                """.trimIndent()
+            """.trimIndent(),
         )
 
         val exception = assertThrows(UnexpectedBuildFailure::class.java) {
@@ -395,7 +396,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         }
         assertThat(
             exception.message,
-            containsString("gradle-advanced-build-version only works with android application modules")
+            containsString("gradle-advanced-build-version only works with android application modules"),
         )
     }
 

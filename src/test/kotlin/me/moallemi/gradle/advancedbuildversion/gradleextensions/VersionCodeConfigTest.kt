@@ -19,9 +19,6 @@ package me.moallemi.gradle.advancedbuildversion.gradleextensions
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
-import java.io.File
-import java.io.FileInputStream
-import java.util.Properties
 import junit.framework.TestCase.assertEquals
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_ONE_STEP
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.AUTO_INCREMENT_STEP
@@ -33,6 +30,9 @@ import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import java.io.File
+import java.io.FileInputStream
+import java.util.Properties
 
 class VersionCodeConfigTest {
 
@@ -75,8 +75,9 @@ class VersionCodeConfigTest {
             versionCodeConfig.versionCode
         }
         Assert.assertEquals(
-            exception.message, "Could not read version.properties file in path ${versionFile.absolutePath}." +
-                " Please create this file and add it to your VCS (git, svn, ...)."
+            exception.message,
+            "Could not read version.properties file in path ${versionFile.absolutePath}." +
+                " Please create this file and add it to your VCS (git, svn, ...).",
         )
     }
 
