@@ -18,10 +18,17 @@ A plugin to generate the Android version code and version name automatically bas
 Add the advanced-build-version plugin to your build script and use the property `advancedVersioning.versionName` and
 `advancedVersioning.versionCode` where you need:
 
+| Gradle Advanced Build Version  | Minumum AGP Version |
+|  :---: |  :---: |
+| 3.0.0  | 8.1.0  |
+| 2.0.2  | 8.0.0  |
+| 2.0.0  | 7.0.0  |
+| 1.7.3  | 3.0.0  |
+
 Using the plugins DSL:
 ```groovy
 plugins {
-    id "me.moallemi.advanced-build-version" version "2.0.2"
+    id "me.moallemi.advanced-build-version" version "3.0.0"
 }
 ```
 
@@ -33,7 +40,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'me.moallemi.gradle:advanced-build-version:2.0.2'
+    classpath 'me.moallemi.gradle:advanced-build-version:3.0.0'
   }
 }
 
@@ -170,7 +177,7 @@ advancedVersioning {
 If your app name is MyApp with 2.7 version name, and you are in debug mode, the output apk file name 
 will be: `MyApp-2.7-debug.apk`
 
-**NOTE:** Android Gradle Plugin 4.1.0 [drops support](https://developer.android.com/studio/known-issues#variant_output) for renaming apk. We are using a workaround to keep renaming option for gradle-advanced-build-version library.
+**NOTE for v 2.x.x Only:** Android Gradle Plugin 4.1.0 [drops support](https://developer.android.com/studio/known-issues#variant_output) for renaming apk. We are using a workaround to keep renaming option for gradle-advanced-build-version library.
 So if you are using AGP 4.1.0+, you have to add `advancedVersioning.renameOutputApk()` after android configuration. The order is important:
 
 ```groovy
