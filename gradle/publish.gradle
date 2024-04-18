@@ -1,7 +1,7 @@
 
 project.description = "Generate Android version code and version name automatically from git tags, date,... ."
 project.group = "me.moallemi.gradle"
-project.version = "2.0.2"
+project.version = "3.0.0"
 
 project.ext {
     pluginId = 'me.moallemi.advanced-build-version'
@@ -15,12 +15,12 @@ project.ext {
     ]
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     from sourceSets.main.allSource
     archiveClassifier.set("sources")
 }
 
-task javadocJar(type: Jar) {
+tasks.register('javadocJar', Jar) {
     from tasks.javadoc
     archiveClassifier.set("javadoc")
 }
