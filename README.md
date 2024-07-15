@@ -1,6 +1,6 @@
 # Gradle Advanced Build Version Plugin
 
-A plugin to generate the Android version code and version name automatically based on git commits number, date and [Semantic Versioning](https://semver.org/).
+If you need automatic incremental Gradle versioning, this plugin helps you to generate the Android version code and version name automatically based on git commits number, date and [Semantic Versioning](https://semver.org/).
 
 [![GitHub Workflow Status](https://github.com/moallemi/gradle-advanced-build-version/workflows/CI/badge.svg)](https://github.com/moallemi/gradle-advanced-build-version/actions?query=workflow%3ACI)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.moallemi.gradle/advanced-build-version/badge.svg)](https://search.maven.org/artifact/me.moallemi.gradle/advanced-build-version)
@@ -126,38 +126,30 @@ advancedVersioning {
 `versionCodeType` can be one of following params:
  
  * `GIT_COMMIT_COUNT` will output total commits number in current branch
- * `AUTO_INCREMENT_DATE` will output 101101614
  * `AUTO_INCREMENT_STEP` will output e.g: 26
- 
- `AUTO_INCREMENT_ONE_STEP` and `AUTO_INCREMENT_STEP` store AI_VERSION_CODE in `version.properties` file in build.gradle 
+
+If you are using CIs like Jenkins, CircleCI or GitHub Actions, and you want to use `GIT_COMMIT_COUNT`, consider checking out repositories with `--depth=1` parameter. You should clone your repository with full history or unshallow an already existing one.
+
+For GitHub Actions consider `fetch-depth: 0`:
+
+```yaml
+steps:
+- name: Checkout
+  uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+```
+
+`AUTO_INCREMENT_STEP` store AI_VERSION_CODE in `version.properties` file in build.gradle 
  directory, you may also change `dependsOnTasks` property to specify that on witch tasks should increase version code
  (default is every task that contains 'release' in its name)
-
-```groovy
-advancedVersioning {
-  codeOptions {
-    versionCodeType 'AUTO_INCREMENT_ONE_STEP'
-    dependsOnTasks 'release' // defaultValue
-  }
-}
-```
-
-Setting multiple tasks for `dependsOnTasks` property:
-```groovy
-advancedVersioning {
-  codeOptions {
-    versionCodeType 'AUTO_INCREMENT_ONE_STEP'
-    dependsOnTasks 'debug', 'release', 'assemble'
-  }
-}
-```
 
 `AUTO_INCREMENT_STEP` allows you to set a step different from 1:
 ```groovy
 advancedVersioning {
   codeOptions {
     versionCodeType 'AUTO_INCREMENT_STEP'
-    versionCodeStep 2
+    versionCodeStep 2 //default to 1
   }
 }
 ``` 
@@ -249,7 +241,7 @@ If your app name is MyApp with 4.6.1 version name the output apk file name will 
 ## License
 
 ```
-Copyright 2022 Reza Moallemi.
+Copyright 2024 Reza Moallemi.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements. See the NOTICE file distributed with this work for
