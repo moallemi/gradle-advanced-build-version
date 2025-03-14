@@ -25,9 +25,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import java.io.File
 import java.io.FileInputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.time.Instant
 import java.util.Properties
 
 class VersionCodeConfig(
@@ -96,8 +94,7 @@ class VersionCodeConfig(
     }
 
     private fun byDateAutoIncrement(): Int {
-        val formatter = SimpleDateFormat("yyMMddHHmm", Locale.ENGLISH)
-        return formatter.format(Date()).toInt() - 1400000000
+        return (Instant.now().epochSecond - 1735689600).toInt() // 2025-01-01
     }
 
     private fun byGitCommitCount() = gitWrapper.getCommitsNumberInBranch()
