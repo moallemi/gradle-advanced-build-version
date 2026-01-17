@@ -25,7 +25,7 @@ import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.GradleException
-import org.gradle.api.Project
+import org.gradle.api.provider.Provider
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -36,11 +36,11 @@ import java.util.Properties
 
 class VersionCodeConfigTest {
 
-    private val project: Project = mockk(relaxUnitFun = true)
-
     private val gitWrapper: GitWrapper = mockk()
 
     private lateinit var versionFile: File
+
+    private var taskNames: List<String> = emptyList()
 
     private lateinit var versionCodeConfig: VersionCodeConfig
 
@@ -49,8 +49,8 @@ class VersionCodeConfigTest {
         versionFile = File(versionFilePath).apply {
             createNewFile()
         }
-        every { project.buildFile } returns versionFile
-        versionCodeConfig = VersionCodeConfig(project, gitWrapper)
+        taskNames = emptyList()
+        versionCodeConfig = VersionCodeConfig(versionFile, gitWrapper, taskNames)
     }
 
     @After
@@ -83,7 +83,9 @@ class VersionCodeConfigTest {
 
     @Test
     fun `versionCodeType is GIT_COMMIT_COUNT`() {
-        every { gitWrapper.getCommitsNumberInBranch() } returns 5
+        val mockProvider: Provider<Int> = mockk()
+        every { mockProvider.get() } returns 5
+        every { gitWrapper.getCommitsNumberInBranch() } returns mockProvider
 
         versionCodeConfig.versionCodeType(GIT_COMMIT_COUNT)
         val actual = versionCodeConfig.versionCode
@@ -93,7 +95,9 @@ class VersionCodeConfigTest {
 
     @Test
     fun `versionCodeType is GIT_COMMIT_COUNT and lastLegacyCode = 987650`() {
-        every { gitWrapper.getCommitsNumberInBranch() } returns 5
+        val mockProvider: Provider<Int> = mockk()
+        every { mockProvider.get() } returns 5
+        every { gitWrapper.getCommitsNumberInBranch() } returns mockProvider
 
         versionCodeConfig.versionCodeType(GIT_COMMIT_COUNT)
         versionCodeConfig.lastLegacyCode(987650)
@@ -133,9 +137,8 @@ class VersionCodeConfigTest {
 
     @Test
     fun `increasing version code is possible with default dependsOnTasks`() {
-        every { project.gradle } returns mockk()
-        every { project.gradle.startParameter } returns mockk()
-        every { project.gradle.startParameter.taskNames } returns listOf("assembleRelease")
+        // Recreate config with the "assembleRelease" task
+        versionCodeConfig = VersionCodeConfig(versionFile, gitWrapper, listOf("assembleRelease"))
 
         val currentVersionCode = versionCodeConfig.versionCode
         versionCodeConfig.increaseVersionCodeIfPossible()
@@ -145,9 +148,8 @@ class VersionCodeConfigTest {
 
     @Test
     fun `increasing version code is not possible with default dependsOnTask`() {
-        every { project.gradle } returns mockk()
-        every { project.gradle.startParameter } returns mockk()
-        every { project.gradle.startParameter.taskNames } returns listOf("test")
+        // Recreate config with "test" task (doesn't match default "release" dependsOnTasks)
+        versionCodeConfig = VersionCodeConfig(versionFile, gitWrapper, listOf("test"))
 
         val currentVersionCode = versionCodeConfig.versionCode
         versionCodeConfig.increaseVersionCodeIfPossible()
@@ -157,9 +159,8 @@ class VersionCodeConfigTest {
 
     @Test
     fun `increasing version code is possible with non-default dependsOnTasks`() {
-        every { project.gradle } returns mockk()
-        every { project.gradle.startParameter } returns mockk()
-        every { project.gradle.startParameter.taskNames } returns listOf("assembleRelease")
+        // Recreate config with "assembleRelease" task
+        versionCodeConfig = VersionCodeConfig(versionFile, gitWrapper, listOf("assembleRelease"))
         versionCodeConfig.dependsOnTasks("release", "debug")
 
         val currentVersionCode = versionCodeConfig.versionCode
@@ -170,9 +171,8 @@ class VersionCodeConfigTest {
 
     @Test
     fun `increasing version code is not possible with non-default dependsOnTask`() {
-        every { project.gradle } returns mockk()
-        every { project.gradle.startParameter } returns mockk()
-        every { project.gradle.startParameter.taskNames } returns listOf("test")
+        // Recreate config with "test" task
+        versionCodeConfig = VersionCodeConfig(versionFile, gitWrapper, listOf("test"))
         versionCodeConfig.dependsOnTasks("release", "debug")
 
         val currentVersionCode = versionCodeConfig.versionCode

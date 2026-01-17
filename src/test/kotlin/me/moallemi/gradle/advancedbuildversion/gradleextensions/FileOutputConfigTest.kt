@@ -28,16 +28,10 @@ import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import org.gradle.api.Action
 import org.gradle.api.DomainObjectSet
-import org.gradle.api.Project
 import org.junit.After
 import org.junit.Test
 
 class FileOutputConfigTest {
-
-    private val project: Project = mockk {
-        every { name } returns APP_NAME
-        every { rootProject.name } returns PROJECT_NAME
-    }
 
     private val variant: ApplicationVariant = mockk {
         every { flavorName } returns FLAVOR_NAME
@@ -50,7 +44,7 @@ class FileOutputConfigTest {
         )
     }
 
-    private val fileOutputConfig = FileOutputConfig(project)
+    private val fileOutputConfig = FileOutputConfig(APP_NAME, PROJECT_NAME)
 
     @After
     fun tearDown() {

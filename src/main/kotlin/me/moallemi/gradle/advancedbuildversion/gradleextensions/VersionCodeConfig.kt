@@ -22,7 +22,6 @@ import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.GradleException
-import org.gradle.api.Project
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
@@ -31,8 +30,9 @@ import java.util.Locale
 import java.util.Properties
 
 class VersionCodeConfig(
-    private val project: Project,
+    private val versionPropsFile: File,
     private val gitWrapper: GitWrapper,
+    private val taskNames: List<String>,
 ) {
 
     private var versionCodeType = AUTO_INCREMENT_ONE_STEP
@@ -42,8 +42,6 @@ class VersionCodeConfig(
     private var dependsOnTasks: List<String> = listOf("release")
 
     private var lastLegacyCode = 0
-
-    private val versionPropsFile = File("${project.buildFile.parent}/version.properties")
 
     fun dependsOnTasks(vararg paths: String) {
         dependsOnTasks = paths.toList()
@@ -71,7 +69,7 @@ class VersionCodeConfig(
 
     internal fun increaseVersionCodeIfPossible() =
         dependsOnTasks.forEach { dependentTask ->
-            project.gradle.startParameter.taskNames.forEach { taskName ->
+            taskNames.forEach { taskName ->
                 if (taskName.contains(dependentTask, true) &&
                     (versionCodeType == AUTO_INCREMENT_ONE_STEP || versionCodeType == AUTO_INCREMENT_STEP) &&
                     versionPropsFile.canRead()
@@ -100,7 +98,7 @@ class VersionCodeConfig(
         return formatter.format(Date()).toInt() - 1400000000
     }
 
-    private fun byGitCommitCount() = gitWrapper.getCommitsNumberInBranch()
+    private fun byGitCommitCount() = gitWrapper.getCommitsNumberInBranch().get()
 
     companion object {
         private const val KEY_VERSION_CODE = "AI_VERSION_CODE"

@@ -367,16 +367,16 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     jcenter()
                     mavenLocal()
                   }
-                
+
                   dependencies {
                     classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
                 }
-                
+
                 apply plugin: 'com.android.library'
                 apply plugin: "$PLUGIN_ID"
-                
+
                 android {
                   namespace 'com.example.namespace'
                   compileSdkVersion 33
@@ -398,6 +398,85 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             exception.message,
             containsString("gradle-advanced-build-version only works with android application modules"),
         )
+    }
+
+    @Test
+    fun `plugin works with configuration cache enabled`() {
+        publishToLocalMaven()
+
+        File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+
+        writeBuildGradle(
+            """
+                buildscript {
+                  repositories {
+                    google()
+                    jcenter()
+                    mavenLocal()
+                  }
+
+                  dependencies {
+                    classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
+                    classpath '$CLASSPATH:$PLUGIN_VERSION'
+                  }
+                }
+
+                repositories {
+                   google()
+                   jcenter()
+                }
+
+                apply plugin: 'com.android.application'
+                apply plugin: "$PLUGIN_ID"
+
+                advancedVersioning {
+                    nameOptions {
+                      versionMajor 1
+                      versionMinor 3
+                      versionPatch 6
+                      versionBuild 8
+                    }
+                  outputOptions {
+                      renameOutput true
+                      nameFormat 'MyApp-${'$'}{versionName}'
+                  }
+                }
+
+                android {
+                  namespace 'com.example.namespace'
+                  compileSdkVersion 33
+                  defaultConfig {
+                    applicationId "com.example.myapplication"
+                    minSdkVersion 19
+                    targetSdkVersion 33
+                    versionCode 1
+                    versionName advancedVersioning.versionName
+                  }
+                  lintOptions {
+                       abortOnError false
+                    }
+                }
+            """.trimIndent(),
+        )
+
+        // First run - stores configuration cache
+        val firstRun = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion(CURRENT_GRADLE_VERSION)
+            .withArguments("--configuration-cache", "assembleDebug")
+            .build()
+        assertThat(firstRun.output, containsString("Applying Advanced Build Version Plugin"))
+        assertThat(firstRun.output, containsString("outputFileName renamed to MyApp-1.3.6.8.apk"))
+
+        // Second run - reuses configuration cache
+        val secondRun = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion(CURRENT_GRADLE_VERSION)
+            .withArguments("--configuration-cache", "assembleDebug")
+            .build()
+        assertThat(secondRun.output, containsString("Reusing configuration cache"))
     }
 
     private fun publishToLocalMaven() {

@@ -18,16 +18,15 @@ package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import com.android.build.api.variant.ApplicationVariant
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
-import groovy.text.SimpleTemplateEngine
-import org.gradle.api.Project
 
-class FileOutputConfig(private val project: Project) {
+class FileOutputConfig(
+    private val projectName: String,
+    private val rootProjectName: String,
+) {
 
     private var nameFormat: String? = null
 
     private var renameOutput = false
-
-    private val templateEngine: SimpleTemplateEngine = SimpleTemplateEngine()
 
     fun nameFormat(format: String) {
         nameFormat = format
@@ -50,14 +49,22 @@ class FileOutputConfig(private val project: Project) {
         applicationVariant: ApplicationVariant,
         baseVariantOutput: BaseVariantOutputImpl,
     ) {
-        val map = linkedMapOf(
-            "appName" to project.name,
-            "projectName" to project.rootProject.name,
-            "flavorName" to applicationVariant.flavorName,
-            "buildType" to applicationVariant.buildType,
-            "versionName" to applicationVariant.outputs.first().versionName.get(),
-            "versionCode" to applicationVariant.outputs.first().versionCode.get().toString(),
+        val versionName = applicationVariant.outputs.first().versionName.get() ?: ""
+        val versionCode = applicationVariant.outputs.first().versionCode.get().toString()
 
+        val replacements = mapOf(
+            "\$appName" to projectName,
+            "\${appName}" to projectName,
+            "\$projectName" to rootProjectName,
+            "\${projectName}" to rootProjectName,
+            "\$flavorName" to (applicationVariant.flavorName ?: ""),
+            "\${flavorName}" to (applicationVariant.flavorName ?: ""),
+            "\$buildType" to (applicationVariant.buildType ?: ""),
+            "\${buildType}" to (applicationVariant.buildType ?: ""),
+            "\$versionName" to versionName,
+            "\${versionName}" to versionName,
+            "\$versionCode" to versionCode,
+            "\${versionCode}" to versionCode,
         )
 
         val template = nameFormat ?: applicationVariant.flavorName
@@ -66,10 +73,10 @@ class FileOutputConfig(private val project: Project) {
                 "\$appName-\$flavorName-\$buildType-\$versionName"
             } ?: "\$appName-\$buildType-\$versionName"
 
-        val fileName = templateEngine
-            .createTemplate(template)
-            .make(map)
-            .toString()
+        var fileName = template
+        replacements.forEach { (key, value) ->
+            fileName = fileName.replace(key, value)
+        }
 
         baseVariantOutput.outputFileName = "$fileName.apk"
         println("outputFileName renamed to $fileName.apk")

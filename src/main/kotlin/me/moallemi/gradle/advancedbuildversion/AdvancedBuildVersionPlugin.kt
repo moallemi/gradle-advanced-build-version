@@ -38,11 +38,21 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
 
         println("Applying Advanced Build Version Plugin")
 
-        val advancedBuildVersionPlugin = project.extensions.create(
-            EXTENSION_NAME,
-            AdvancedBuildVersionConfig::class.java,
-            project,
+        // Capture values at configuration time for configuration cache compatibility
+        val projectDir = project.projectDir
+        val projectName = project.name
+        val rootProjectName = project.rootProject.name
+        val providers = project.providers
+        val taskNames = project.gradle.startParameter.taskNames.toList()
+
+        val advancedBuildVersionPlugin = AdvancedBuildVersionConfig(
+            projectDir = projectDir,
+            projectName = projectName,
+            rootProjectName = rootProjectName,
+            providers = providers,
+            taskNames = taskNames,
         )
+        project.extensions.add(EXTENSION_NAME, advancedBuildVersionPlugin)
 
         project.plugins.all { plugin ->
             when (plugin) {

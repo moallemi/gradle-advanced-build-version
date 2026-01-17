@@ -20,16 +20,27 @@ import com.android.build.api.variant.ApplicationVariant
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import groovy.lang.Closure
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
-import me.moallemi.gradle.advancedbuildversion.utils.closureOf
-import org.gradle.api.Project
+import org.gradle.api.provider.ProviderFactory
+import org.gradle.util.internal.ConfigureUtil
+import java.io.File
 
-open class AdvancedBuildVersionConfig(private val project: Project) {
+open class AdvancedBuildVersionConfig(
+    projectDir: File,
+    projectName: String,
+    rootProjectName: String,
+    providers: ProviderFactory,
+    taskNames: List<String>,
+) {
 
     internal var versionNameConfig = VersionNameConfig()
 
-    internal var versionCodeConfig = VersionCodeConfig(project, GitWrapper(project))
+    internal var versionCodeConfig = VersionCodeConfig(
+        versionPropsFile = File(projectDir, "version.properties"),
+        gitWrapper = GitWrapper(projectDir, providers),
+        taskNames = taskNames,
+    )
 
-    internal var outputConfig = FileOutputConfig(project)
+    internal var outputConfig = FileOutputConfig(projectName, rootProjectName)
 
     val versionName by lazy {
         versionNameConfig.versionName
@@ -40,27 +51,27 @@ open class AdvancedBuildVersionConfig(private val project: Project) {
     }
 
     fun nameOptions(closure: Closure<*>) {
-        project.configure(versionNameConfig, closure)
+        ConfigureUtil.configure(closure, versionNameConfig)
     }
 
     fun nameOptions(config: VersionNameConfig.() -> Unit) {
-        project.configure(versionNameConfig, closureOf(config))
+        versionNameConfig.config()
     }
 
     fun codeOptions(closure: Closure<*>) {
-        project.configure(versionCodeConfig, closure)
+        ConfigureUtil.configure(closure, versionCodeConfig)
     }
 
     fun codeOptions(config: VersionCodeConfig.() -> Unit) {
-        project.configure(versionCodeConfig, closureOf(config))
+        versionCodeConfig.config()
     }
 
     fun outputOptions(closure: Closure<*>) {
-        project.configure(outputConfig, closure)
+        ConfigureUtil.configure(closure, outputConfig)
     }
 
     fun outputOptions(config: FileOutputConfig.() -> Unit) {
-        project.configure(outputConfig, closureOf(config))
+        outputConfig.config()
     }
 
     internal fun increaseVersionCodeIfPossible() {

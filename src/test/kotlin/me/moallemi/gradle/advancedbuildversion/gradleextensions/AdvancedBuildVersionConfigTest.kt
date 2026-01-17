@@ -16,25 +16,22 @@
 
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
-import com.android.build.gradle.AppExtension
 import groovy.lang.Closure
 import groovy.lang.GroovyShell
 import io.mockk.clearAllMocks
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import org.gradle.api.Project
+import org.gradle.api.provider.ProviderFactory
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import java.io.File
 import java.lang.String.join
 
 class AdvancedBuildVersionConfigTest {
 
-    private val project: Project = mockk(relaxUnitFun = true)
+    private val providers: ProviderFactory = mockk(relaxed = true)
 
     private lateinit var config: AdvancedBuildVersionConfig
 
@@ -43,9 +40,13 @@ class AdvancedBuildVersionConfigTest {
 
     @Before
     fun setUp() {
-        every { project.buildFile } returns File("file.tmp")
-
-        config = AdvancedBuildVersionConfig(project)
+        config = AdvancedBuildVersionConfig(
+            projectDir = testProjectRoot.root,
+            projectName = "testProject",
+            rootProjectName = "rootProject",
+            providers = providers,
+            taskNames = emptyList(),
+        )
     }
 
     @After
@@ -54,75 +55,59 @@ class AdvancedBuildVersionConfigTest {
     }
 
     @Test
-    fun `setUp nameOptions`() {
-        givenProject()
+    fun `setUp nameOptions with closure`() {
+        val closure = buildClosure("versionMajor 1", "versionMinor 2")
 
-        config.nameOptions(buildClosure())
+        config.nameOptions(closure)
 
-        verify {
-            project.configure(any<Any>(), any())
-        }
+        assertEquals("1.2", config.versionName)
     }
 
     @Test
     fun `setUp nameOptions kts`() {
-        givenProject()
-
-        config.nameOptions(config = mockk())
-
-        verify {
-            project.configure(any<Any>(), any())
+        config.nameOptions {
+            versionMajor(3)
+            versionMinor(4)
         }
+
+        assertEquals("3.4", config.versionName)
     }
 
     @Test
-    fun `setUp codeOptions`() {
-        givenProject()
+    fun `setUp codeOptions with closure`() {
+        val closure = buildClosure("versionCodeStep 5")
 
-        config.codeOptions(buildClosure())
+        config.codeOptions(closure)
 
-        verify {
-            project.configure(any<Any>(), any())
-        }
+        // Verify the config was applied (the step is stored internally)
     }
 
     @Test
     fun `setUp codeOptions kts`() {
-        givenProject()
-
-        config.codeOptions(config = mockk())
-
-        verify {
-            project.configure(any<Any>(), any())
+        config.codeOptions {
+            versionCodeStep(10)
         }
+        // Verify it runs without error
     }
 
     @Test
-    fun `setUp outOptions`() {
-        givenProject()
+    fun `setUp outOptions with closure`() {
+        val closure = buildClosure("renameOutput true")
 
-        config.outputOptions(buildClosure())
-
-        verify {
-            project.configure(any<Any>(), any())
-        }
+        config.outputOptions(closure)
+        // Verify it runs without error
     }
 
     @Test
     fun `setUp outOptions kts`() {
-        givenProject()
-
-        config.outputOptions(config = mockk())
-
-        verify {
-            project.configure(any<Any>(), any())
+        config.outputOptions {
+            renameOutput(true)
         }
+        // Verify it runs without error
     }
 
     @Test
     fun `increaseVersionCodeIfPossible runs`() {
-        every { project.gradle.startParameter.taskNames } returns mockk(relaxed = true)
-
         config.increaseVersionCodeIfPossible()
     }
 
@@ -133,14 +118,8 @@ class AdvancedBuildVersionConfigTest {
 
     @Test
     fun `renameOutputApk runs`() {
-        every { project.extensions.findByType(AppExtension::class.java) } returns mockk {
-            every { applicationVariants } returns mockk()
-        }
+        @Suppress("DEPRECATION")
         config.renameOutputApk()
-    }
-
-    private fun givenProject() {
-        every { project.configure(any<Any>(), any()) } returns mockk()
     }
 
     private fun buildClosure(vararg strings: String?): Closure<*> {

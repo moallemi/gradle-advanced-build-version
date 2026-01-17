@@ -16,17 +16,19 @@
 
 package me.moallemi.gradle.advancedbuildversion.utils
 
-import org.gradle.api.Project
-import java.io.ByteArrayOutputStream
+import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ProviderFactory
+import java.io.File
 
-class GitWrapper(private val project: Project) {
+class GitWrapper(
+    private val projectDir: File,
+    private val providers: ProviderFactory,
+) {
 
-    fun getCommitsNumberInBranch(): Int {
-        val output = ByteArrayOutputStream()
-        project.exec {
+    fun getCommitsNumberInBranch(): Provider<Int> {
+        return providers.exec {
+            it.workingDir = projectDir
             it.commandLine("git", "rev-list", "--count", "HEAD")
-            it.standardOutput = output
-        }
-        return output.toString().trim().toInt()
+        }.standardOutput.asText.map { it.trim().toInt() }
     }
 }

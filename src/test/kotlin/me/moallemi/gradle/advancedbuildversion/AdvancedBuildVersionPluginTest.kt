@@ -43,9 +43,14 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 
 class AdvancedBuildVersionPluginTest {
+
+    @get:Rule
+    var testProjectRoot = TemporaryFolder()
 
     private val project: Project = mockk()
 
@@ -56,14 +61,23 @@ class AdvancedBuildVersionPluginTest {
         mockkStatic("me.moallemi.gradle.advancedbuildversion.utils.CompatibilityManagerKt")
         every { checkAndroidGradleVersion(any()) } just runs
 
+        // Configure project mocks for configuration cache compatible constructor
+        every { project.projectDir } returns testProjectRoot.root
+        every { project.name } returns "testProject"
+        every { project.rootProject } returns mockk {
+            every { name } returns "rootProject"
+        }
+        every { project.providers } returns mockk(relaxed = true)
+        every { project.gradle } returns mockk {
+            every { startParameter } returns mockk {
+                every { taskNames } returns emptyList()
+            }
+        }
+
         every { project.extensions } returns mockk()
         every {
-            project.extensions.create(
-                any(),
-                AdvancedBuildVersionConfig::class.java,
-                any<Project>(),
-            )
-        } returns mockk()
+            project.extensions.add(EXTENSION_NAME, any<AdvancedBuildVersionConfig>())
+        } just runs
 
         val afterEvaluateSlot = slot<Action<in Project>>()
         every {
@@ -85,12 +99,6 @@ class AdvancedBuildVersionPluginTest {
         every {
             project.plugins.all(capture(pluginsSlot))
         } answers { pluginsSlot.captured.execute(applicationPlugin) }
-
-        every {
-            project.extensions.create(
-                EXTENSION_NAME, AdvancedBuildVersionConfig::class.java, project,
-            )
-        } returns mockk(relaxUnitFun = true)
 
         every {
             project.extensions.getByType(AppExtension::class.java)
@@ -156,6 +164,7 @@ class AdvancedBuildVersionPluginTest {
 
     private fun mockGetAndroidPlugin() {
         every { project.rootProject } returns mockk {
+            every { name } returns "rootProject"
             every { buildscript } returns mockk {
                 every { configurations } returns mockk {
                     every {
