@@ -479,6 +479,92 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         assertThat(secondRun.output, containsString("Reusing configuration cache"))
     }
 
+    @Test
+    fun `GIT_COMMIT_COUNT works with configuration cache enabled`() {
+        publishToLocalMaven()
+
+        File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+
+        // Set up git repository with commits
+        prepareGitCommits()
+
+        writeBuildGradle(
+            """
+                buildscript {
+                  repositories {
+                    google()
+                    jcenter()
+                    mavenLocal()
+                  }
+
+                  dependencies {
+                    classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
+                    classpath '$CLASSPATH:$PLUGIN_VERSION'
+                  }
+                }
+
+                repositories {
+                   google()
+                   jcenter()
+                }
+
+                apply plugin: 'com.android.application'
+                apply plugin: "$PLUGIN_ID"
+
+                advancedVersioning {
+                    nameOptions {
+                      versionMajor 1
+                      versionMinor 3
+                      versionPatch 6
+                      versionBuild 8
+                    }
+                    codeOptions {
+                      versionCodeType 'GIT_COMMIT_COUNT'
+                    }
+                    outputOptions {
+                      renameOutput true
+                      nameFormat 'MyApp-${'$'}{versionName}-${'$'}{versionCode}'
+                    }
+                }
+
+                android {
+                  namespace 'com.example.namespace'
+                  compileSdkVersion 33
+                  defaultConfig {
+                    applicationId "com.example.myapplication"
+                    minSdkVersion 19
+                    targetSdkVersion 33
+                    versionCode advancedVersioning.versionCode
+                    versionName advancedVersioning.versionName
+                  }
+                  lintOptions {
+                       abortOnError false
+                  }
+                }
+            """.trimIndent(),
+        )
+
+        // First run - stores configuration cache
+        val firstRun = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion(CURRENT_GRADLE_VERSION)
+            .withArguments("--configuration-cache", "assembleDebug")
+            .build()
+        assertThat(firstRun.output, containsString("Applying Advanced Build Version Plugin"))
+        // prepareGitCommits creates 2 commits, so versionCode should be 2
+        assertThat(firstRun.output, containsString("outputFileName renamed to MyApp-1.3.6.8-2.apk"))
+
+        // Second run - reuses configuration cache
+        val secondRun = GradleRunner.create()
+            .withProjectDir(testProjectRoot.root)
+            .withPluginClasspath()
+            .withGradleVersion(CURRENT_GRADLE_VERSION)
+            .withArguments("--configuration-cache", "assembleDebug")
+            .build()
+        assertThat(secondRun.output, containsString("Reusing configuration cache"))
+    }
+
     private fun publishToLocalMaven() {
         ProcessBuilder("./gradlew", "publishAdvancedBuildVersionPublicationToMavenLocal")
             .start()
@@ -493,6 +579,37 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     private fun writeBuildGradle(build: String) {
         val file = testProjectRoot.newFile("build.gradle")
         file.writeText(build)
+    }
+
+    private fun prepareGitCommits() {
+        testProjectRoot.newFile("first.txt")
+
+        ProcessBuilder("git", "init")
+            .directory(testProjectRoot.root)
+            .start()
+            .waitFor(5, TimeUnit.SECONDS)
+
+        ProcessBuilder("git", "add", ".")
+            .directory(testProjectRoot.root)
+            .start()
+            .waitFor(5, TimeUnit.SECONDS)
+
+        ProcessBuilder("git", "commit", "-m", "first commit")
+            .directory(testProjectRoot.root)
+            .start()
+            .waitFor(5, TimeUnit.SECONDS)
+
+        testProjectRoot.newFile("second.txt")
+
+        ProcessBuilder("git", "add", ".")
+            .directory(testProjectRoot.root)
+            .start()
+            .waitFor(5, TimeUnit.SECONDS)
+
+        ProcessBuilder("git", "commit", "-m", "second commit")
+            .directory(testProjectRoot.root)
+            .start()
+            .waitFor(5, TimeUnit.SECONDS)
     }
 
     companion object {
