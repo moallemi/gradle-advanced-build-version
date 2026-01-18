@@ -1,8 +1,32 @@
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
+import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.GIT_COMMIT_COUNT
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.android)
 }
+
+apply(plugin = "me.moallemi.advanced-build-version")
+
+configure<AdvancedBuildVersionConfig> {
+  nameOptions {
+    versionMajor(1)
+    versionMinor(3)
+    versionPatch(6)
+    versionBuild(8)
+  }
+  codeOptions {
+    versionCodeType(GIT_COMMIT_COUNT)
+  }
+  outputOptions {
+    renameOutput(true)
+    nameFormat("\${appName}-\${buildType}-\${versionName}-\${versionCode}")
+  }
+}
+
+val advancedVersioning = project.extensions.getByType(AdvancedBuildVersionConfig::class.java)
+
 
 android {
   namespace = "com.example.gradaleadvancebuildversionplayground"
@@ -14,8 +38,8 @@ android {
     applicationId = "com.example.gradaleadvancebuildversionplayground"
     minSdk = 24
     targetSdk = 36
-    versionCode = 1
-    versionName = "1.0"
+    versionCode = advancedVersioning.versionCode
+    versionName = advancedVersioning.versionName
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
