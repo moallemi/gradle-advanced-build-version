@@ -3,7 +3,6 @@
 If you need automatic incremental Gradle versioning, this plugin helps you to generate the Android version code and version name automatically based on git commits number, date and [Semantic Versioning](https://semver.org/).
 
 [![GitHub Workflow Status](https://github.com/moallemi/gradle-advanced-build-version/workflows/CI/badge.svg)](https://github.com/moallemi/gradle-advanced-build-version/actions?query=workflow%3ACI)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/me.moallemi.gradle/advanced-build-version/badge.svg)](https://search.maven.org/artifact/me.moallemi.gradle/advanced-build-version)
 [![Coverage](https://codecov.io/gh/moallemi/gradle-advanced-build-version/branch/dev/graph/badge.svg)](https://codecov.io/gh/moallemi/gradle-advanced-build-version)
 
 ## Contents
@@ -20,6 +19,7 @@ Add the advanced-build-version plugin to your build script and use the property 
 
 | Gradle Advanced Build Version  | Minumum AGP Version |
 |  :---: |  :---: |
+| 3.5.0  | 8.1.0  |
 | 3.0.0  | 8.1.0  |
 | 2.0.2  | 8.0.0  |
 | 2.0.0  | 7.0.0  |
@@ -28,7 +28,7 @@ Add the advanced-build-version plugin to your build script and use the property 
 Using the plugins DSL:
 ```groovy
 plugins {
-    id "me.moallemi.advanced-build-version" version "3.0.0"
+    id "me.moallemi.advanced-build-version" version "3.5.0"
 }
 ```
 
@@ -36,11 +36,11 @@ Using legacy plugin application:
 ```groovy
 buildscript {
   repositories {
-    mavenCentral()
+    gradlePluginPortal()
   }
 
   dependencies {
-    classpath 'me.moallemi.gradle:advanced-build-version:3.0.0'
+    classpath 'me.moallemi.gradle:advanced-build-version:3.5.0'
   }
 }
 
