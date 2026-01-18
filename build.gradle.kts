@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    id("com.gradle.plugin-publish") version "0.20.0"
+    alias(libs.plugins.gradlePublish)
     id("java-gradle-plugin")
 
     alias(libs.plugins.spotless)

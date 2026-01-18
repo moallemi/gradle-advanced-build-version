@@ -1,30 +1,13 @@
-
 gradlePlugin {
-    plugins {
-        myPlugin {
-            id = project.pluginId
-            implementationClass = 'me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin'
-        }
-    }
-}
-
-pluginBundle {
     website = project.url
     vcsUrl = project.url
-    description = project.description
-    tags = ['android', 'versionName', 'versionCode', 'git']
-
     plugins {
-        myPlugin {
-            // id is captured from java-gradle-plugin configuration
+        advancedBuildVersion {
+            id = project.pluginId
+            implementationClass = 'me.moallemi.gradle.advancedbuildversion.AdvancedBuildVersionPlugin'
             displayName = project.name
-            version = project.version
+            description = project.description
+            tags = ['android', 'versionName', 'versionCode', 'git']
         }
-    }
-
-    mavenCoordinates {
-        groupId = project.group
-        artifactId = project.artifactId
-        version = project.version
     }
 }

@@ -1,6 +1,7 @@
 [versions]
 androidGradlePlugin = "8.3.1"
 kotlin = "1.9.20"
+gradlePublish = "2.0.0"
 
 [libraries]
 android-gradlePlugin-api = { group = "com.android.tools.build", name = "gradle-api", version.ref = "androidGradlePlugin" }
@@ -8,3 +9,4 @@ android-gradlePlugin-api = { group = "com.android.tools.build", name = "gradle-a
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 spotless = "com.diffplug.spotless:6.20.0"
+gradlePublish = { id = "com.gradle.plugin-publish", version.ref = "gradlePublish" }

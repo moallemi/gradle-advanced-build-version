@@ -15,14 +15,9 @@ project.ext {
     ]
 }
 
-tasks.register('sourcesJar', Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier.set("sources")
-}
-
-tasks.register('javadocJar', Jar) {
-    from tasks.javadoc
-    archiveClassifier.set("javadoc")
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 apply from: 'gradle/maven-publish.gradle'

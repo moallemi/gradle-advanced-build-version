@@ -7,8 +7,6 @@ publishing {
             version = project.version
 
             from components.java
-            artifact tasks["sourcesJar"]
-            artifact tasks["javadocJar"]
 
             pom {
                 name = project.name
