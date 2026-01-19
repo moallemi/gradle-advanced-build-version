@@ -589,6 +589,17 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             .start()
             .waitFor(5, TimeUnit.SECONDS)
 
+        // Configure git user locally for this temp repo (required in CI environments)
+        ProcessBuilder("git", "config", "--local", "user.email", "test@test.com")
+            .directory(testProjectRoot.root)
+            .start()
+            .waitFor(5, TimeUnit.SECONDS)
+
+        ProcessBuilder("git", "config", "--local", "user.name", "Test User")
+            .directory(testProjectRoot.root)
+            .start()
+            .waitFor(5, TimeUnit.SECONDS)
+
         ProcessBuilder("git", "add", ".")
             .directory(testProjectRoot.root)
             .start()
