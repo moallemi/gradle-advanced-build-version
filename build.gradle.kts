@@ -4,7 +4,7 @@ plugins {
     id("java-gradle-plugin")
 
     alias(libs.plugins.spotless)
-    id("com.adarshr.test-logger") version "4.0.0"
+    alias(libs.plugins.test.logger)
 
     id("maven-publish")
     id("signing")
@@ -16,16 +16,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
-    implementation("com.android.tools.build:gradle:8.3.0")
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.android.gradlePlugin)
 
-    implementation("com.android.tools.build:gradle-api:8.3.0")
+    implementation(libs.android.gradlePlugin.api)
     implementation(gradleKotlinDsl())
 
     testImplementation(gradleTestKit())
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.hamcrest:hamcrest:2.2")
-    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation(libs.junit)
+    testImplementation(libs.hammerchat)
+    testImplementation(libs.mockk)
 }
 
 apply(from = "gradle/spotless.gradle")

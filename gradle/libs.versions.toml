@@ -4,9 +4,15 @@ kotlin = "1.9.20"
 gradlePublish = "2.0.0"
 
 [libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 android-gradlePlugin-api = { group = "com.android.tools.build", name = "gradle-api", version.ref = "androidGradlePlugin" }
+junit = { group = "junit", name = "junit", version = "4.13.2" }
+hammerchat = { group = "org.hamcrest", name = "hamcrest", version = "2.2" }
+mockk = { group = "io.mockk", name = "mockk", version = "1.13.10" }
 
 [plugins]
+test-logger = { id = "com.adarshr.test-logger", version = "4.0.0" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 spotless = "com.diffplug.spotless:6.20.0"
 gradlePublish = { id = "com.gradle.plugin-publish", version.ref = "gradlePublish" }
