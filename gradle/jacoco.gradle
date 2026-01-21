@@ -1,17 +1,17 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = "0.8.9"
+    toolVersion = "0.8.14"
 }
 
 jacocoTestReport {
     dependsOn test
     reports {
         html.required = true
-        html.destination = file('build/reports/jacoco/html')
+        html.outputLocation = layout.buildDirectory.dir('reports/jacoco/html')
 
         xml.required = true
-        xml.destination = file('build/reports/jacoco/html/report.xml')
+        xml.outputLocation = layout.buildDirectory.file('reports/jacoco/html/report.xml')
         csv.required = false
     }
     afterEvaluate {
