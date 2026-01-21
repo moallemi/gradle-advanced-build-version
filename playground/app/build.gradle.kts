@@ -4,7 +4,6 @@ import me.moallemi.gradle.advancedbuildversion.gradleextensions.VersionCodeType.
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
-  alias(libs.plugins.kotlin.android)
 }
 
 apply(plugin = "me.moallemi.advanced-build-version")
@@ -58,8 +57,11 @@ android {
     compose = true
     buildConfig = true
   }
-  kotlinOptions {
-    jvmTarget = "11"
+}
+
+kotlin {
+  compilerOptions {
+    jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
   }
 }
 
