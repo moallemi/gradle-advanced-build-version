@@ -17,11 +17,6 @@
 package me.moallemi.gradle.advancedbuildversion
 
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.FeaturePlugin
-import com.android.build.gradle.LibraryPlugin
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -94,24 +89,17 @@ class AdvancedBuildVersionPluginTest {
 
     @Test
     fun `plugin applies successfully on Android Application module`() {
-        val applicationPlugin = mockk<AppPlugin>()
-        val pluginsSlot = slot<Action<in Plugin<*>>>()
+        val withIdSlot = slot<Action<Plugin<*>>>()
         every {
-            project.plugins.all(capture(pluginsSlot))
-        } answers { pluginsSlot.captured.execute(applicationPlugin) }
+            project.plugins.withId(eq("com.android.application"), capture(withIdSlot))
+        } answers { withIdSlot.captured.execute(mockk<Plugin<*>>()) }
 
         every {
-            project.extensions.getByType(AppExtension::class.java)
-        } returns mockk {
-            every { applicationVariants } returns mockk()
-        }
+            project.plugins.withId(eq("com.android.library"), any<Action<Plugin<*>>>())
+        } just runs
 
         every {
             project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
-        } returns mockk(relaxed = true, relaxUnitFun = true)
-
-        every {
-            project.extensions.getByType(BaseAppModuleExtension::class.java)
         } returns mockk(relaxed = true, relaxUnitFun = true)
 
         mockGetAndroidPlugin()
@@ -126,35 +114,19 @@ class AdvancedBuildVersionPluginTest {
 
     @Test
     fun `fails on applying to Android Library module`() {
-        val libraryPlugin = mockk<LibraryPlugin>()
-        val pluginsSlot = slot<Action<in Plugin<*>>>()
         every {
-            project.plugins.all(capture(pluginsSlot))
-        } answers { pluginsSlot.captured.execute(libraryPlugin) }
+            project.plugins.withId(eq("com.android.application"), any<Action<Plugin<*>>>())
+        } just runs
+
+        val withIdSlot = slot<Action<Plugin<*>>>()
+        every {
+            project.plugins.withId(eq("com.android.library"), capture(withIdSlot))
+        } answers { withIdSlot.captured.execute(mockk<Plugin<*>>()) }
 
         val exception = assertThrows(IllegalStateException::class.java) {
             plugin.apply(project)
         }
         assertEquals(exception.message, "Library module is not supported yet")
-
-        verifyOrder {
-            checkMinimumGradleVersion()
-            checkAndroidGradleVersion(project)
-        }
-    }
-
-    @Test
-    fun `fails on applying to Android Feature module`() {
-        val featurePlugin = mockk<FeaturePlugin>()
-        val pluginsSlot = slot<Action<in Plugin<*>>>()
-        every {
-            project.plugins.all(capture(pluginsSlot))
-        } answers { pluginsSlot.captured.execute(featurePlugin) }
-
-        val exception = assertThrows(IllegalStateException::class.java) {
-            plugin.apply(project)
-        }
-        assertEquals(exception.message, "Feature module is not supported")
 
         verifyOrder {
             checkMinimumGradleVersion()
@@ -175,7 +147,7 @@ class AdvancedBuildVersionPluginTest {
                         every { iterator().next() } returns mockk {
                             every { group } returns ANDROID_GRADLE_PLUGIN_GROUP
                             every { name } returns ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID
-                            every { version } returns "3.0.1"
+                            every { version } returns "9.0.0"
                         }
                     }
                 }

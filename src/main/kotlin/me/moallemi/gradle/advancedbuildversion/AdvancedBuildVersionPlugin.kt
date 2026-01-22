@@ -17,9 +17,6 @@
 package me.moallemi.gradle.advancedbuildversion
 
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.FeaturePlugin
-import com.android.build.gradle.LibraryPlugin
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
@@ -54,12 +51,11 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
         )
         project.extensions.add(EXTENSION_NAME, advancedBuildVersionPlugin)
 
-        project.plugins.all { plugin ->
-            when (plugin) {
-                is AppPlugin -> configureAndroid(project, advancedBuildVersionPlugin)
-                is FeaturePlugin -> throw IllegalStateException("Feature module is not supported")
-                is LibraryPlugin -> throw IllegalStateException("Library module is not supported yet")
-            }
+        project.plugins.withId("com.android.application") {
+            configureAndroid(project, advancedBuildVersionPlugin)
+        }
+        project.plugins.withId("com.android.library") {
+            throw IllegalStateException("Library module is not supported yet")
         }
     }
 
