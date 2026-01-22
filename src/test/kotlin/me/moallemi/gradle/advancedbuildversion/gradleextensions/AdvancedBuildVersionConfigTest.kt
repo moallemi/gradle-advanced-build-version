@@ -112,8 +112,14 @@ class AdvancedBuildVersionConfigTest {
     }
 
     @Test
-    fun `renameOutputApkIfPossible runs`() {
-        config.renameOutputApkIfPossible(mockk(), mockk())
+    fun `shouldRenameOutput returns false by default`() {
+        assertEquals(false, config.shouldRenameOutput())
+    }
+
+    @Test
+    fun `generateOutputFileName returns null when renameOutput is disabled`() {
+        val result = config.generateOutputFileName(mockk(relaxed = true), "1.0.0", 1)
+        assertEquals(null, result)
     }
 
     @Test

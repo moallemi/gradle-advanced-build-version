@@ -16,15 +16,15 @@
 
 package me.moallemi.gradle.advancedbuildversion
 
+import com.android.build.api.artifact.SingleArtifact
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import me.moallemi.gradle.advancedbuildversion.gradleextensions.AdvancedBuildVersionConfig
 import me.moallemi.gradle.advancedbuildversion.utils.checkAndroidGradleVersion
 import me.moallemi.gradle.advancedbuildversion.utils.checkJavaRuntimeVersion
 import me.moallemi.gradle.advancedbuildversion.utils.checkMinimumGradleVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import java.io.File
 
 class AdvancedBuildVersionPlugin : Plugin<Project> {
 
@@ -63,12 +63,35 @@ class AdvancedBuildVersionPlugin : Plugin<Project> {
         config.increaseVersionCodeIfPossible()
 
         val androidComponents = project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
-        val appExtension = project.extensions.getByType(BaseAppModuleExtension::class.java)
 
-        androidComponents.onVariants { applicationVariant ->
-            appExtension.buildOutputs.all { baseVariantOutput ->
-                val variantOutputImpl = baseVariantOutput as BaseVariantOutputImpl
-                config.renameOutputApkIfPossible(applicationVariant, variantOutputImpl)
+        androidComponents.onVariants { variant ->
+            if (config.shouldRenameOutput()) {
+                val versionName = variant.outputs.first().versionName.orNull ?: ""
+                val versionCode = variant.outputs.first().versionCode.orNull ?: 0
+                val outputFileName = config.generateOutputFileName(variant, versionName, versionCode)
+
+                if (outputFileName != null) {
+                    val assembleTaskName = "assemble${variant.name.replaceFirstChar { it.uppercase() }}"
+                    val apkDirectory = variant.artifacts.get(SingleArtifact.APK)
+                    val artifactsLoader = variant.artifacts.getBuiltArtifactsLoader()
+
+                    // Use afterEvaluate to ensure the assemble task exists
+                    project.afterEvaluate {
+                        project.tasks.named(assembleTaskName) { assembleTask ->
+                            assembleTask.doLast {
+                                val builtArtifacts = artifactsLoader.load(apkDirectory.get()) ?: return@doLast
+                                builtArtifacts.elements.forEach { artifact ->
+                                    val sourceFile = File(artifact.outputFile)
+                                    val destFile = File(sourceFile.parentFile, outputFileName)
+                                    if (sourceFile.absolutePath != destFile.absolutePath) {
+                                        sourceFile.copyTo(destFile, overwrite = true)
+                                        println("outputFileName renamed to $outputFileName")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
