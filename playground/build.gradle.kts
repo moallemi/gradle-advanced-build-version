@@ -6,7 +6,7 @@ buildscript {
 
   dependencies {
     // this version should match the local maven version of the gradle plugin, because we are testing local version
-    classpath("me.moallemi.gradle:advanced-build-version:3.0.2")
+    classpath("me.moallemi.gradle:advanced-build-version:3.5.1")
   }
 }
 

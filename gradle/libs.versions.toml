@@ -1,6 +1,6 @@
 [versions]
-androidGradlePlugin = "8.3.1"
-kotlin = "1.9.20"
+androidGradlePlugin = "9.0.0"
+kotlin = "2.2.10"
 gradlePublish = "2.0.0"
 
 [libraries]
