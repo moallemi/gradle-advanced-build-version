@@ -17,17 +17,11 @@
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import com.android.build.api.variant.ApplicationVariant
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import io.mockk.clearAllMocks
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
-import io.mockk.slot
-import io.mockk.verify
 import junit.framework.Assert.assertEquals
-import org.gradle.api.Action
-import org.gradle.api.DomainObjectSet
+import junit.framework.Assert.assertNull
 import org.junit.After
 import org.junit.Test
 
@@ -36,12 +30,6 @@ class FileOutputConfigTest {
     private val variant: ApplicationVariant = mockk {
         every { flavorName } returns FLAVOR_NAME
         every { buildType } returns BUILD_TYPE
-        every { outputs } returns listOf(
-            mockk {
-                every { versionName.get() } returns VERSION_NAME
-                every { versionCode.get() } returns VERSION_CODE
-            },
-        )
     }
 
     private val fileOutputConfig = FileOutputConfig(APP_NAME, PROJECT_NAME)
@@ -52,73 +40,74 @@ class FileOutputConfigTest {
     }
 
     @Test
-    fun `must not rename apk by default`() {
-        val variants: ApplicationVariant = mockk()
-
-        fileOutputConfig.renameOutputApkIfPossible(mockk(), mockk())
-
-        verify(exactly = 0) {
-            variants.outputs
-        }
+    fun `shouldRenameOutput returns false by default`() {
+        assertEquals(false, fileOutputConfig.shouldRenameOutput())
     }
 
     @Test
-    fun `must not rename apk if renameOutput = false`() {
-        val variants: DomainObjectSet<ApplicationVariant> = mockk()
-
+    fun `shouldRenameOutput returns false when renameOutput is false`() {
         fileOutputConfig.renameOutput(false)
-        fileOutputConfig.renameOutputApkIfPossible(mockk(), mockk())
-
-        verify(exactly = 0) {
-            variants.all(any<Action<in ApplicationVariant>>())
-        }
+        assertEquals(false, fileOutputConfig.shouldRenameOutput())
     }
 
     @Test
-    fun `must rename apk if renameOutput = true and FLAVOR_NAME is not null`() {
-        val baseVariantOutputSlot = slot<String>()
-        val baseVariantOutput: BaseVariantOutputImpl = mockk {
-            every { outputFileName = capture(baseVariantOutputSlot) } just runs
-        }
-
+    fun `shouldRenameOutput returns true when renameOutput is true`() {
         fileOutputConfig.renameOutput(true)
-        fileOutputConfig.renameOutputApkIfPossible(variant, baseVariantOutput)
-
-        val apkFileName = "$APP_NAME-$FLAVOR_NAME-$BUILD_TYPE-$VERSION_NAME.apk"
-        assertEquals(apkFileName, baseVariantOutputSlot.captured)
+        assertEquals(true, fileOutputConfig.shouldRenameOutput())
     }
 
     @Test
-    fun `must rename apk if renameOutput = true and FLAVOR_NAME is null`() {
+    fun `generateOutputFileName returns null when renameOutput is false`() {
+        fileOutputConfig.renameOutput(false)
+        val result = fileOutputConfig.generateOutputFileName(variant, VERSION_NAME, VERSION_CODE)
+        assertNull(result)
+    }
+
+    @Test
+    fun `generateOutputFileName returns correct filename with flavor name`() {
+        fileOutputConfig.renameOutput(true)
+        val result = fileOutputConfig.generateOutputFileName(variant, VERSION_NAME, VERSION_CODE)
+        val expectedFileName = "$APP_NAME-$FLAVOR_NAME-$BUILD_TYPE-$VERSION_NAME.apk"
+        assertEquals(expectedFileName, result)
+    }
+
+    @Test
+    fun `generateOutputFileName returns correct filename when flavor is null`() {
         every { variant.flavorName } returns null
 
-        val baseVariantOutputSlot = slot<String>()
-        val baseVariantOutput: BaseVariantOutputImpl = mockk {
-            every { outputFileName = capture(baseVariantOutputSlot) } just runs
-        }
-
         fileOutputConfig.renameOutput(true)
-        fileOutputConfig.renameOutputApkIfPossible(variant, baseVariantOutput)
-
-        val apkFileName = "$APP_NAME-$BUILD_TYPE-$VERSION_NAME.apk"
-        assertEquals(apkFileName, baseVariantOutputSlot.captured)
+        val result = fileOutputConfig.generateOutputFileName(variant, VERSION_NAME, VERSION_CODE)
+        val expectedFileName = "$APP_NAME-$BUILD_TYPE-$VERSION_NAME.apk"
+        assertEquals(expectedFileName, result)
     }
 
     @Test
-    fun `must rename apk if renameOutput = true and nameFormat MyApp-google-play-VERSION-NAME`() {
+    fun `generateOutputFileName returns correct filename with custom nameFormat`() {
         every { variant.flavorName } returns null
-
-        val baseVariantOutputSlot = slot<String>()
-        val baseVariantOutput: BaseVariantOutputImpl = mockk {
-            every { outputFileName = capture(baseVariantOutputSlot) } just runs
-        }
 
         fileOutputConfig.renameOutput(true)
         fileOutputConfig.nameFormat("MyApp-google-play-\$versionName")
-        fileOutputConfig.renameOutputApkIfPossible(variant, baseVariantOutput)
+        val result = fileOutputConfig.generateOutputFileName(variant, VERSION_NAME, VERSION_CODE)
+        val expectedFileName = "MyApp-google-play-$VERSION_NAME.apk"
+        assertEquals(expectedFileName, result)
+    }
 
-        val apkFileName = "MyApp-google-play-$VERSION_NAME.apk"
-        assertEquals(apkFileName, baseVariantOutputSlot.captured)
+    @Test
+    fun `generateOutputFileName supports versionCode in nameFormat`() {
+        fileOutputConfig.renameOutput(true)
+        fileOutputConfig.nameFormat("MyApp-\$versionName-\$versionCode")
+        val result = fileOutputConfig.generateOutputFileName(variant, VERSION_NAME, VERSION_CODE)
+        val expectedFileName = "MyApp-$VERSION_NAME-$VERSION_CODE.apk"
+        assertEquals(expectedFileName, result)
+    }
+
+    @Test
+    fun `generateOutputFileName supports curly brace syntax`() {
+        fileOutputConfig.renameOutput(true)
+        fileOutputConfig.nameFormat("MyApp-\${versionName}-\${versionCode}")
+        val result = fileOutputConfig.generateOutputFileName(variant, VERSION_NAME, VERSION_CODE)
+        val expectedFileName = "MyApp-$VERSION_NAME-$VERSION_CODE.apk"
+        assertEquals(expectedFileName, result)
     }
 
     companion object {

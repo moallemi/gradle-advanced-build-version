@@ -17,7 +17,6 @@
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import com.android.build.api.variant.ApplicationVariant
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import groovy.lang.Closure
 import me.moallemi.gradle.advancedbuildversion.utils.GitWrapper
 import org.gradle.api.provider.ProviderFactory
@@ -78,12 +77,13 @@ open class AdvancedBuildVersionConfig(
         versionCodeConfig.increaseVersionCodeIfPossible()
     }
 
-    internal fun renameOutputApkIfPossible(
+    internal fun shouldRenameOutput(): Boolean = outputConfig.shouldRenameOutput()
+
+    internal fun generateOutputFileName(
         applicationVariant: ApplicationVariant,
-        baseVariantOutput: BaseVariantOutputImpl,
-    ) {
-        outputConfig.renameOutputApkIfPossible(applicationVariant, baseVariantOutput)
-    }
+        versionName: String,
+        versionCode: Int,
+    ): String? = outputConfig.generateOutputFileName(applicationVariant, versionName, versionCode)
 
     @Deprecated(
         "No need to call This method anymore.It will be removed in a future release.",

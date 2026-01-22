@@ -17,7 +17,6 @@
 package me.moallemi.gradle.advancedbuildversion.gradleextensions
 
 import com.android.build.api.variant.ApplicationVariant
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 
 class FileOutputConfig(
     private val projectName: String,
@@ -36,21 +35,16 @@ class FileOutputConfig(
         renameOutput = b
     }
 
-    fun renameOutputApkIfPossible(
-        applicationVariant: ApplicationVariant,
-        baseVariantOutput: BaseVariantOutputImpl,
-    ) {
-        if (renameOutput) {
-            generateOutputName(applicationVariant, baseVariantOutput)
-        }
-    }
+    fun shouldRenameOutput(): Boolean = renameOutput
 
-    private fun generateOutputName(
+    fun generateOutputFileName(
         applicationVariant: ApplicationVariant,
-        baseVariantOutput: BaseVariantOutputImpl,
-    ) {
-        val versionName = applicationVariant.outputs.first().versionName.get() ?: ""
-        val versionCode = applicationVariant.outputs.first().versionCode.get().toString()
+        versionName: String,
+        versionCode: Int,
+    ): String? {
+        if (!renameOutput) {
+            return null
+        }
 
         val replacements = mapOf(
             "\$appName" to projectName,
@@ -63,8 +57,8 @@ class FileOutputConfig(
             "\${buildType}" to (applicationVariant.buildType ?: ""),
             "\$versionName" to versionName,
             "\${versionName}" to versionName,
-            "\$versionCode" to versionCode,
-            "\${versionCode}" to versionCode,
+            "\$versionCode" to versionCode.toString(),
+            "\${versionCode}" to versionCode.toString(),
         )
 
         val template = nameFormat ?: applicationVariant.flavorName
@@ -78,7 +72,6 @@ class FileOutputConfig(
             fileName = fileName.replace(key, value)
         }
 
-        baseVariantOutput.outputFileName = "$fileName.apk"
-        println("outputFileName renamed to $fileName.apk")
+        return "$fileName.apk"
     }
 }
