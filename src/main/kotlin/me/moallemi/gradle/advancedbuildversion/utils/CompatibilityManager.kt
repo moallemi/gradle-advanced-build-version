@@ -60,10 +60,9 @@ private fun checkAndroidVersion(version: String?): Boolean {
         return false // Invalid format
     }
     val major = parts[0].toIntOrNull() ?: return false
-    val minor = parts[1].toIntOrNull() ?: return false
 
-    // we only support AGP 8.1.0+
-    return major >= 8 && minor >= 1
+    // we only support AGP 9.0.0+
+    return major >= 9
 }
 
 fun getAndroidPlugin(project: Project): Dependency? =
@@ -82,7 +81,7 @@ private fun findClassPathDependencyVersion(project: Project, group: String, attr
         group == it.group && it.name == attributeId
     }
 
-internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("8.4")
-internal const val ANDROID_GRADLE_MIN_VERSION = "8.1.0"
+internal val GRADLE_MIN_VERSION: GradleVersion = GradleVersion.version("9.1.0")
+internal const val ANDROID_GRADLE_MIN_VERSION = "9.0.0"
 internal const val ANDROID_GRADLE_PLUGIN_GROUP = "com.android.tools.build"
 internal const val ANDROID_GRADLE_PLUGIN_ATTRIBUTE_ID = "gradle"

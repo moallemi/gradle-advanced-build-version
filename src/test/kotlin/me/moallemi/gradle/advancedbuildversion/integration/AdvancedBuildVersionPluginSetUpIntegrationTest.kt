@@ -49,12 +49,12 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             GradleRunner.create()
                 .withProjectDir(testProjectRoot.root)
                 .withPluginClasspath()
-                .withGradleVersion("7.2")
+                .withGradleVersion("8.4")
                 .build()
         }
         assertThat(
             exception.message,
-            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 7.2"),
+            containsString("plugin requires at least minimum version $GRADLE_MIN_VERSION. Detected version Gradle 8.4"),
         )
     }
 
@@ -66,11 +66,11 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             """
                 buildscript {
                   repositories {
-                    jcenter()
+                    mavenCentral()
                     google()
                     mavenLocal()
                   }
-                
+
                   dependencies {
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
@@ -101,10 +101,10 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
-                
+
                   dependencies {
                     classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
@@ -138,10 +138,10 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
-                
+
                   dependencies {
                     classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
@@ -184,7 +184,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
                 }
@@ -193,14 +193,14 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     id("com.android.application")
                     id("$PLUGIN_ID")
                 }
-                
+
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 33
+                  compileSdk 35
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 19
-                    targetSdkVersion 33
+                    minSdk 21
+                    targetSdk 35
                     versionCode 1
                     versionName "1.0"
                   }
@@ -217,7 +217,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     }
 
     @Test
-    fun `build fails with unsupported android gradle plugin 3_1_0`() {
+    fun `build fails with unsupported android gradle plugin 8_1_0`() {
         publishToLocalMaven()
 
         File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
@@ -227,24 +227,24 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
-                
+
                   dependencies {
-                    classpath 'com.android.tools.build:gradle:3.1.0'
+                    classpath 'com.android.tools.build:gradle:8.1.0'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
                 }
-                
+
                 repositories {
                    google()
-                   jcenter()
+                   mavenCentral()
                 }
-                
+
                 apply plugin: 'com.android.application'
                 apply plugin: "$PLUGIN_ID"
-                
+
                 advancedVersioning {
                     nameOptions {
                       versionMajor 1
@@ -260,11 +260,11 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 33
+                  compileSdk 33
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 19
-                    targetSdkVersion 33
+                    minSdk 19
+                    targetSdk 33
                     versionCode 1
                     versionName advancedVersioning.versionName
                   }
@@ -281,22 +281,23 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         }
         assertThat(
             exception.message,
-            containsString("gradle-advanced-build-version does not support Android Gradle plugin 3.1.0"),
+            containsString("gradle-advanced-build-version does not support Android Gradle plugin 8.1.0"),
         )
     }
 
     @Test
-    fun `outputOptions check versionName and renameOutput is correct for android gradle plugin 7_0_0`() {
+    fun `outputOptions check versionName and renameOutput is correct for android gradle plugin 9_0_0`() {
         publishToLocalMaven()
 
         File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+        writeSettingsGradle()
 
         writeBuildGradle(
             """
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
 
@@ -306,14 +307,9 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                   }
                 }
 
-                repositories {
-                   google()
-                   jcenter()
-                }
-
                 apply plugin: 'com.android.application'
                 apply plugin: "$PLUGIN_ID"
-                
+
                 advancedVersioning {
                     nameOptions {
                       versionMajor 1
@@ -329,17 +325,17 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 33
+                  compileSdk 35
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 19
-                    targetSdkVersion 33
+                    minSdk 21
+                    targetSdk 35
                     versionCode 1
                     versionName advancedVersioning.versionName
                   }
-                  lintOptions {
-                       abortOnError false
-                    }
+                  lint {
+                    abortOnError false
+                  }
                 }
                 advancedVersioning.renameOutputApk()
             """.trimIndent(),
@@ -349,7 +345,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
             .withProjectDir(testProjectRoot.root)
             .withPluginClasspath()
             .withGradleVersion(CURRENT_GRADLE_VERSION)
-            .withArguments("assemble")
+            .withArguments("assembleDebug")
             .build()
         assertThat(output.output, containsString("Applying Advanced Build Version Plugin"))
         assertThat(output.output, containsString("outputFileName renamed to MyApp-1.3.6.8.apk"))
@@ -364,7 +360,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
 
@@ -379,9 +375,9 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 33
+                  compileSdk 35
                   defaultConfig {
-                      minSdkVersion 14
+                      minSdk 21
                   }
                 }
             """.trimIndent(),
@@ -405,13 +401,14 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         publishToLocalMaven()
 
         File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+        writeSettingsGradle()
 
         writeBuildGradle(
             """
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
 
@@ -419,11 +416,6 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
-                }
-
-                repositories {
-                   google()
-                   jcenter()
                 }
 
                 apply plugin: 'com.android.application'
@@ -444,17 +436,17 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 33
+                  compileSdk 35
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 19
-                    targetSdkVersion 33
+                    minSdk 21
+                    targetSdk 35
                     versionCode 1
                     versionName advancedVersioning.versionName
                   }
-                  lintOptions {
-                       abortOnError false
-                    }
+                  lint {
+                    abortOnError false
+                  }
                 }
             """.trimIndent(),
         )
@@ -484,6 +476,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
         publishToLocalMaven()
 
         File("src/test/test-data", "app").copyRecursively(testProjectRoot.root)
+        writeSettingsGradle()
 
         // Set up git repository with commits
         prepareGitCommits()
@@ -493,7 +486,7 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                 buildscript {
                   repositories {
                     google()
-                    jcenter()
+                    mavenCentral()
                     mavenLocal()
                   }
 
@@ -501,11 +494,6 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
                     classpath 'com.android.tools.build:gradle:$MIN_AGP_SUPPORTED_VERSION'
                     classpath '$CLASSPATH:$PLUGIN_VERSION'
                   }
-                }
-
-                repositories {
-                   google()
-                   jcenter()
                 }
 
                 apply plugin: 'com.android.application'
@@ -529,16 +517,16 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
                 android {
                   namespace 'com.example.namespace'
-                  compileSdkVersion 33
+                  compileSdk 35
                   defaultConfig {
                     applicationId "com.example.myapplication"
-                    minSdkVersion 19
-                    targetSdkVersion 33
+                    minSdk 21
+                    targetSdk 35
                     versionCode advancedVersioning.versionCode
                     versionName advancedVersioning.versionName
                   }
-                  lintOptions {
-                       abortOnError false
+                  lint {
+                    abortOnError false
                   }
                 }
             """.trimIndent(),
@@ -579,6 +567,29 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
     private fun writeBuildGradle(build: String) {
         val file = testProjectRoot.newFile("build.gradle")
         file.writeText(build)
+    }
+
+    private fun writeSettingsGradle() {
+        val file = testProjectRoot.newFile("settings.gradle")
+        file.writeText(
+            """
+            pluginManagement {
+                repositories {
+                    google()
+                    mavenCentral()
+                    mavenLocal()
+                }
+            }
+            dependencyResolutionManagement {
+                repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+                repositories {
+                    google()
+                    mavenCentral()
+                    mavenLocal()
+                }
+            }
+            """.trimIndent(),
+        )
     }
 
     private fun prepareGitCommits() {
@@ -625,8 +636,8 @@ class AdvancedBuildVersionPluginSetUpIntegrationTest {
 
     companion object {
         private const val CLASSPATH = "me.moallemi.gradle:advanced-build-version"
-        private const val CURRENT_GRADLE_VERSION = "8.4"
-        private const val MIN_AGP_SUPPORTED_VERSION = "8.1.0"
+        private const val CURRENT_GRADLE_VERSION = "9.1.0"
+        private const val MIN_AGP_SUPPORTED_VERSION = "9.0.0"
         private val PLUGIN_ID by lazy {
             ProjectProps.load().advancedBuildPluginId
         }
