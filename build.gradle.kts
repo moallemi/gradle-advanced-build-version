@@ -24,7 +24,7 @@ dependencies {
 
     testImplementation(gradleTestKit())
     testImplementation(libs.junit)
-    testImplementation(libs.hammerchat)
+    testImplementation(libs.hamerchat)
     testImplementation(libs.mockk)
 }
 

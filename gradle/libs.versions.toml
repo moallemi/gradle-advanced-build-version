@@ -8,7 +8,7 @@ kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", versio
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 android-gradlePlugin-api = { group = "com.android.tools.build", name = "gradle-api", version.ref = "androidGradlePlugin" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
-hammerchat = { group = "org.hamcrest", name = "hamcrest", version = "2.2" }
+hamerchat = { group = "org.hamcrest", name = "hamcrest", version = "2.2" }
 mockk = { group = "io.mockk", name = "mockk", version = "1.13.10" }
 
 [plugins]
