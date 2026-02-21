@@ -1,9 +1,9 @@
 # Gradle Advanced Build Version Plugin
 
-If you need automatic incremental Gradle versioning, this plugin helps you to generate the Android version code and version name automatically based on git commits number, date and [Semantic Versioning](https://semver.org/).
+A Gradle plugin that automatically generates Android version code and version name based on git commits count, date, and [Semantic Versioning](https://semver.org/).
 
 [![GitHub Workflow Status](https://github.com/moallemi/gradle-advanced-build-version/workflows/CI/badge.svg)](https://github.com/moallemi/gradle-advanced-build-version/actions?query=workflow%3ACI)
-[![Coverage](https://codecov.io/gh/moallemi/gradle-advanced-build-version/branch/dev/graph/badge.svg)](https://codecov.io/gh/moallemi/gradle-advanced-build-version)
+[![Coverage](https://codecov.io/gh/moallemi/gradle-advanced-build-version/branch/master/graph/badge.svg)](https://codecov.io/gh/moallemi/gradle-advanced-build-version)
 
 ## Contents
 1. [Installation](#installation)
@@ -17,35 +17,23 @@ If you need automatic incremental Gradle versioning, this plugin helps you to ge
 Add the advanced-build-version plugin to your build script and use the property `advancedVersioning.versionName` and
 `advancedVersioning.versionCode` where you need:
 
-| Gradle Advanced Build Version  | Minumum AGP Version |
-|  :---: |  :---: |
-| 3.5.0  | 8.1.0  |
-| 3.0.0  | 8.1.0  |
-| 2.0.2  | 8.0.0  |
-| 2.0.0  | 7.0.0  |
-| 1.7.3  | 3.0.0  |
+| Gradle Advanced Build Version | Minimum AGP Version |
+|:-----------------------------:|:-------------------:|
+|             4.0.0             |        9.0.0        |
+|             3.5.0             |        8.1.0        |
+|             3.0.0             |        8.1.0        |
+|             2.0.2             |        8.0.0        |
+|             2.0.0             |        7.0.0        |
+|             1.7.3             |        3.0.0        |
 
 Using the plugins DSL:
-```groovy
+```kotlin
 plugins {
-    id "me.moallemi.advanced-build-version" version "3.5.0"
+    id("me.moallemi.advanced-build-version") version "4.0.0"
 }
 ```
 
-Using legacy plugin application:
-```groovy
-buildscript {
-  repositories {
-    gradlePluginPortal()
-  }
-
-  dependencies {
-    classpath 'me.moallemi.gradle:advanced-build-version:3.5.0'
-  }
-}
-
-apply plugin: 'me.moallemi.advanced-build-version'
-```
+For other installation options, please visit [plugin page](https://plugins.gradle.org/plugin/me.moallemi.advanced-build-version) in Gradle Plugins Portal.
 
 ## How to use
 
@@ -123,14 +111,16 @@ advancedVersioning {
 }
 ```
 
-`versionCodeType` can be one of following params:
- 
- * `GIT_COMMIT_COUNT` will output total commits number in current branch
- * `AUTO_INCREMENT_STEP` will output e.g: 26
+`versionCodeType` can be one of the following values:
 
-If you are using CIs like Jenkins, CircleCI or GitHub Actions, and you want to use `GIT_COMMIT_COUNT`, consider checking out repositories with `--depth=1` parameter. You should clone your repository with full history or unshallow an already existing one.
+ * `GIT_COMMIT_COUNT` — total number of commits in the current branch
+ * `AUTO_INCREMENT_STEP` — file-based auto-increment (e.g. 26)
 
-For GitHub Actions consider `fetch-depth: 0`:
+### GIT_COMMIT_COUNT
+
+If you are using CIs like Jenkins, CircleCI or GitHub Actions, and you want to use `GIT_COMMIT_COUNT`, you should clone your repository with full history or unshallow an already existing one.
+
+For GitHub Actions use `fetch-depth: 0`:
 
 ```yaml
 steps:
@@ -140,23 +130,37 @@ steps:
     fetch-depth: 0
 ```
 
-`AUTO_INCREMENT_STEP` store AI_VERSION_CODE in `version.properties` file in build.gradle 
- directory, you may also change `dependsOnTasks` property to specify that on witch tasks should increase version code
- (default is every task that contains 'release' in its name)
+### AUTO_INCREMENT_STEP
 
-`AUTO_INCREMENT_STEP` allows you to set a step different from 1:
+Stores `AI_VERSION_CODE` in a `version.properties` file in the build.gradle directory. You can change the `dependsOnTasks` property to specify which tasks should increase the version code (default is every task that contains 'release' in its name).
+
+You can set a step different from 1:
 ```groovy
 advancedVersioning {
   codeOptions {
     versionCodeType 'AUTO_INCREMENT_STEP'
-    versionCodeStep 2 //default to 1
+    versionCodeStep 2 // default is 1
   }
 }
-``` 
+```
+
+### lastLegacyCode
+
+If you are migrating from a different versioning system, you can use `lastLegacyCode` to add an offset to the generated version code:
+
+```groovy
+advancedVersioning {
+  codeOptions {
+    versionCodeType 'GIT_COMMIT_COUNT'
+    lastLegacyCode 987650
+  }
+}
+```
+
+The final version code will be `lastLegacyCode + generatedCode`. 
 
 ## File output options
-You can also rename the output generated apk file with this plugin. it can be done just by enabling 
-the `renameOutput` option:
+You can rename the output APK file by enabling the `renameOutput` option:
 
 ```groovy
 advancedVersioning {
@@ -166,25 +170,10 @@ advancedVersioning {
 }
 ```
 
-If your app name is MyApp with 2.7 version name, and you are in debug mode, the output apk file name 
+If your app name is MyApp with 2.7 version name, and you are in debug mode, the output APK file name
 will be: `MyApp-2.7-debug.apk`
 
-**NOTE for v 2.x.x Only:** Android Gradle Plugin 4.1.0 [drops support](https://developer.android.com/studio/known-issues#variant_output) for renaming apk. We are using a workaround to keep renaming option for gradle-advanced-build-version library.
-So if you are using AGP 4.1.0+, you have to add `advancedVersioning.renameOutputApk()` after android configuration. The order is important:
-
-```groovy
-advancedVersioning {
-  outputOptions {
-    renameOutput true
-  }
-}
-android {
-  ...
-}
-advancedVersioning.renameOutputApk()
-```
-
-You can customize the output name by using this params:
+You can customize the output name by using these params:
 
 * `${appName}`: name of main module
 * `${projectName}`: name of root project
@@ -241,7 +230,7 @@ If your app name is MyApp with 4.6.1 version name the output apk file name will 
 ## License
 
 ```
-Copyright 2024 Reza Moallemi.
+Copyright 2026 Reza Moallemi.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements. See the NOTICE file distributed with this work for
