@@ -196,6 +196,15 @@ class VersionCodeConfigTest {
         assertEquals(6, versionCodeConfig.versionCode)
     }
 
+    @Test
+    fun `versionCodeType is AUTO_INCREMENT_DATE`() {
+        versionCodeConfig.versionCodeType(VersionCodeType.AUTO_INCREMENT_DATE)
+
+        // "The greatest value Google Play allows for versionCode is 2100000000."
+        // @see https://developer.android.com/studio/publish/versioning#appversioning
+        assert(versionCodeConfig.versionCode <= 2100000000)
+    }
+
     companion object {
         private val versionFilePath = getResourcePath().path + ""
 
